@@ -5,25 +5,27 @@ const usersData = [
   {
     id: 1,
     firstName: 'Gabriel',
-    lastName: 'Dantas'
+    lastName: 'Dantas',
+    date: new Date()
   },
   {
     id: 2,
     firstName: 'Mike',
-    lastName: 'Smith'
+    lastName: 'Smith',
+    date: new Date()
   }
 ];
 
 const addresses = [
   {
     userId: 1,
-    houseNumber: 1,
+    houseNumber: '41',
     street: 'Good Street',
     zipCode: 12345
   },
   {
     userId: 2,
-    houseNumber: 2,
+    houseNumber: '142',
     street: 'Bad Street',
     zipCode: 54321
   }
@@ -34,6 +36,7 @@ const typeDefs = `#graphql
   type User {
     firstName: String! # ! means that the field is a Non-Null type
     lastName: String!
+    date: String
   }
 
   type Address {
@@ -95,6 +98,12 @@ const resolvers = {
         addresses: filteredAddresses
       }
     }
+  },
+  Address: {
+    houseNumber: (address) => parseInt(address.houseNumber),
+  },
+  User: {
+    date: (user) => new Date(user.date).toISOString()
   }
 }
 
