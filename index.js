@@ -54,19 +54,48 @@ const typeDefs = `#graphql
     getAllUsers: UserResponse
   }
 
+  type Mutation {
+    updateUser(id: Int!, firstName: String!): UserResponse!
+    deleteUser(id: Int!): UserResponse
+  }
 `
 
 const resolvers = {
   Query: {
-    getUser(parent, args) {
+    getUser(_, args) {
       const user = usersData.find((data) => data.id === parseInt(args.id));
       const address = addresses.find((data) => data.userId === parseInt(args.id));
       return {
         user,
         address
       }
+    },
+    getAllUsers(_, args) {
+      return {
+        users: usersData,
+        addresses
+      }
     }
   },
+  Mutation: {
+    updateUser(_, args) {
+      const user = usersData.find((data) => data.id === args.id)
+      const updatedUser = { ...user, firstName: args.firstName }
+      const address = addresses.find((data) => data.userId === args.id)
+      return {
+        user: updatedUser,
+        address
+      }
+    },
+    deleteUser(_, args) {
+      const users = usersData.filter((data) => data.id !== args.id)
+      const filteredAddresses = addresses.filter((data) => data.userId !== args.id)
+      return {
+        users,
+        addresses: filteredAddresses
+      }
+    }
+  }
 }
 
 const server = new ApolloServer({ typeDefs, resolvers })
