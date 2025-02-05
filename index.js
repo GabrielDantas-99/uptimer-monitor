@@ -1,3 +1,6 @@
+import { ApolloServer } from '@apollo/server'
+import { startStandaloneServer } from '@apollo/server/standalone'
+
 const usersData = [
   {
     id: 1,
@@ -36,7 +39,7 @@ const typeDefs = `#graphql
   type Address {
     houseNumber: Int!
     street: String!
-    zipCode: Int | String # | Union types
+    zipCode: Int 
   }
 
   type UserResponse {
@@ -47,7 +50,7 @@ const typeDefs = `#graphql
   }
 
   type Query {
-    getUser(id: ID!): UserResponse!
+    getUser(id: Int!): UserResponse!
     getAllUsers: UserResponse
   }
 
@@ -56,13 +59,16 @@ const typeDefs = `#graphql
 const resolvers = {
   Query: {
     getUser(parent, args) {
-      const user = usersData.find((data) => data.id === args.id);
-      const address = addresses.find((data) => data.userId === args.id);
+      const user = usersData.find((data) => data.id === parseInt(args.id));
+      const address = addresses.find((data) => data.userId === parseInt(args.id));
       return {
         user,
         address
       }
     }
   },
-  Mutation: {},
 }
+
+const server = new ApolloServer({ typeDefs, resolvers })
+const { url } = await startStandaloneServer(server, { listen: { port: 8000 } });
+console.log(`Server running at ${url}`)
