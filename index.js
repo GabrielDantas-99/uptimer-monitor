@@ -8,7 +8,7 @@ const typeDefs = `#graphql
   type Address {
     houseNumber: Int!
     street: String!
-    zipCode: Int
+    zipCode: Int | String # | Union types
   }
 
   type UserResponse {
@@ -17,3 +17,15 @@ const typeDefs = `#graphql
   }
 
 `
+
+const resolvers = {
+  Query: {},
+  Mutation: {},
+  Subscriptions: {},
+  Address: {
+    houseNumber: (address) => parseInt(address.houseNumber) // Updating especific fields
+  },
+  User: {
+    lastName: (user) => console.log(user.lastName)
+  }
+}
