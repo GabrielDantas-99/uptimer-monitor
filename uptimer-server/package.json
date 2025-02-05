@@ -15,8 +15,10 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-async-errors": "^3.1.1",
+    "sequelize": "^6.37.5",
     "typescript": "^5.7.3",
     "typescript-transform-paths": "^3.5.3"
   },

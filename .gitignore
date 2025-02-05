@@ -1,2 +1,4 @@
 /uptimer-server/node_modules
+/uptimer-server/.env
+
 /graphql-fundamentals/node_modules
