@@ -92,6 +92,7 @@ export default class MonitorServer {
       })
     );
     this.graphqlRoute(app);
+    this.healthRoute(app);
   }
 
   private graphqlRoute(app: Express): void {
@@ -106,6 +107,11 @@ export default class MonitorServer {
         },
       })
     );
+  }
+  private healthRoute(app: Express): void {
+    app.get("/health", (_req: Request, res: Response) => {
+      res.status(200).send("Uptimer monitor service is healthy and OK.");
+    });
   }
 
   private async startServer(): Promise<void> {
