@@ -1,3 +1,5 @@
+import { INotificationDocument } from "./notification.interface";
+
 declare global {
   namespace Express {
     interface Request {
@@ -27,4 +29,5 @@ export interface IUserDocument {
 
 export interface IUserResponse {
   user: IUserDocument;
+  notifications: INotificationDocument[];
 }
