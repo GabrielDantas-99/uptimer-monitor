@@ -20,6 +20,29 @@ import { isEmail } from "@app/utils/utils";
 import { UserModel } from "@app/models/user.model";
 
 export const UserResolver = {
+  Query: {
+    async checkCurrentUser(
+      _: undefined,
+      __: undefined,
+      contextValue: AppContext
+    ) {
+      const { req } = contextValue;
+      // TODO: validate jwt token
+      if (!req.session?.jwt) {
+        throw new GraphQLError("Please login again.");
+      }
+      const notifications = await getAllNotificationGroups(1);
+      return {
+        user: {
+          id: 1,
+          username: "Gabriel",
+          email: "gabriel@mail.com",
+          createdAt: new Date(),
+        },
+        notifications,
+      };
+    },
+  },
   Mutation: {
     async loginUser(
       _: undefined,
@@ -110,6 +133,12 @@ export const UserResolver = {
         );
         return response;
       }
+    },
+    logout(_: undefined, __: undefined, contextValue: AppContext) {
+      const { req } = contextValue;
+      req.session = null;
+      req.currentUser = undefined;
+      return null;
     },
   },
   User: {
