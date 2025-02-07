@@ -18,6 +18,7 @@ import { toLower, upperFirst } from "lodash";
 import { Request } from "express";
 import { authenticateGraphQLRoute, isEmail } from "@app/utils/utils";
 import { UserModel } from "@app/models/user.model";
+import { UserLoginRules } from "@app/validations";
 
 export const UserResolver = {
   Query: {
@@ -50,6 +51,10 @@ export const UserResolver = {
     ) {
       const { req } = contextValue;
       const { username, password } = args;
+      await UserLoginRules.validate(
+        { username, password },
+        { abortEarly: false }
+      );
       // TODO: validate
       const isValidEmail = isEmail(username);
       const type = !isValidEmail ? "username" : "email";
@@ -80,7 +85,9 @@ export const UserResolver = {
       contextValue: AppContext
     ) {
       const { req } = contextValue;
-      const { username, email, password } = args.user;
+      const { user } = args;
+      await UserLoginRules.validate(user, { abortEarly: false });
+      const { username, email, password } = user;
       // TODO: Add data validation
       const checkIfUserExist: IUserDocument | undefined =
         await getUserByUsernameOrEmail(username!, email!);
@@ -106,6 +113,7 @@ export const UserResolver = {
       contextValue: AppContext
     ) {
       const { req } = contextValue;
+      await UserLoginRules.validate(args.user, { abortEarly: false });
       const { username, email, socialId, type } = args.user;
       // TODO: Add data validation
       const checkIfUserExist: IUserDocument | undefined =
