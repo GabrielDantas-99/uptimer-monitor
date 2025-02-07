@@ -8,9 +8,11 @@ import {
 } from '@apollo/client';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { getMainDefinition } from '@apollo/client/utilities';
+import { CachePersistor, LocalStorageWrapper } from 'apollo3-cache-persist';
 import { Kind, OperationTypeNode } from 'graphql';
 import { createClient } from 'graphql-ws';
 
+// TODO: Change to env variables
 const httpUrl: string = 'http://localhost:5000/graphql';
 const wsUrl: string = 'ws://localhost:5000/graphql';
 
@@ -36,6 +38,19 @@ const wsLink = new GraphQLWsLink(
 );
 
 const cache: InMemoryCache = new InMemoryCache();
+let apolloPersistor: CachePersistor<NormalizedCacheObject> | null = null;
+
+const initPersistorCache = async (): Promise<void> => {
+  apolloPersistor = new CachePersistor({
+    cache,
+    storage: new LocalStorageWrapper(window.localStorage),
+    debug: false,
+    trigger: 'write',
+  });
+  await apolloPersistor.restore();
+};
+
+initPersistorCache();
 
 const apolloClient: ApolloClient<NormalizedCacheObject> = new ApolloClient({
   link: split(isSubscription, wsLink, httpLink),
@@ -51,4 +66,4 @@ function isSubscription({ query }: { query: any }): boolean {
   );
 }
 
-export { apolloClient };
+export { apolloClient, apolloPersistor };
