@@ -8,15 +8,49 @@ import {
 } from "@app/services/notification.service";
 import {
   createNewUser,
+  getUserByProp,
   getUserByUsernameOrEmail,
 } from "@app/services/user.service";
 import { GraphQLError } from "graphql";
 import { sign } from "jsonwebtoken";
 import { toLower, upperFirst } from "lodash";
 import { Request } from "express";
+import { isEmail } from "@app/utils/utils";
+import { UserModel } from "@app/models/user.model";
 
 export const UserResolver = {
   Mutation: {
+    async loginUser(
+      _: undefined,
+      args: { username: string; password: string },
+      contextValue: AppContext
+    ) {
+      const { req } = contextValue;
+      const { username, password } = args;
+      // TODO: validate
+      const isValidEmail = isEmail(username);
+      const type = !isValidEmail ? "username" : "email";
+      const existingUser: IUserDocument | undefined = await getUserByProp(
+        username,
+        type
+      );
+      if (!existingUser) {
+        throw new GraphQLError("Invalid credentials");
+      }
+      const passwordMatch: boolean = await UserModel.prototype.comparePassword(
+        password,
+        existingUser.password!
+      );
+      if (!passwordMatch) {
+        throw new GraphQLError("Invalid credentials");
+      }
+      const response: IUserResponse = await userReturnValue(
+        req,
+        existingUser,
+        "login"
+      );
+      return response;
+    },
     async registerUser(
       _: undefined,
       args: { user: IUserDocument },
