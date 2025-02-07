@@ -15,6 +15,7 @@ export async function databaseConnection(): Promise<void> {
   try {
     await sequelize.authenticate();
     await sequelize.sync(); // Checks the models and if table already exists
+    logger.info("Postgres database connection has been established successful");
   } catch (error) {
     logger.error("Unable to connect to database.", error);
   }
