@@ -1,3 +1,4 @@
+import IndexHeader from "@/app/_components/IndexHeader";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -27,6 +28,7 @@ export default function Home() {
 
   return (
     <div className="">
+      <IndexHeader />
       <main className="flex flex-col gap-8 row-start-2 items-center justify-center sm:items-start md:p-12 md:pt-6 max-w-6xl mx-auto">
         <div className="flex items-center ">
           <div className="w-1/2 flex flex-col space-y-6">
