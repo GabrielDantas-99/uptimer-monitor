@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import IndexHeader from "@/components/headers/IndexHeader";
+import { apolloClient } from "@/queries/apolloClient";
+import ApolloProvider from "@/queries/apolloProvider";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -19,12 +21,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${font.className} antialiased`}
-      >
-        <IndexHeader />
-        {children}
-      </body>
+      <ApolloProvider client={apolloClient}>
+        <body
+          className={`${font.className} antialiased`}
+        >
+          <IndexHeader />
+          {children}
+        </body>
+      </ApolloProvider>
     </html>
   );
 }
