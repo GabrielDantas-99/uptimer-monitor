@@ -33,7 +33,7 @@ export async function getSingleNotificationGroup(
 
 export async function getAllNotificationGroups(
   userId: number
-): Promise<INotificationDocument[] | undefined> {
+): Promise<INotificationDocument[]> {
   try {
     const notifications: INotificationDocument[] =
       (await NotificationModel.findAll({

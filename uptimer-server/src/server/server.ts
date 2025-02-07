@@ -26,15 +26,13 @@ import cookieSession from "cookie-session";
 import { expressMiddleware } from "@apollo/server/express4";
 import logger from "./logger";
 import { mergedGQLSchema } from "@app/graphql/schema";
+import { BaseContext } from "@apollo/server";
+import { resolvers } from "@app/graphql/resolvers";
 
-// TESTS
-const resolvers = {
-  Query: {
-    user() {
-      return { username: "Gabriel" };
-    },
-  },
-};
+export interface AppContext {
+  req: Request;
+  res: Response;
+}
 
 export default class MonitorServer {
   private app: Express;
@@ -48,7 +46,7 @@ export default class MonitorServer {
       typeDefs: mergedGQLSchema,
       resolvers,
     });
-    this.server = new ApolloServer({
+    this.server = new ApolloServer<AppContext | BaseContext>({
       schema,
       introspection: NODE_ENV !== Envs.PROD,
       plugins: [
