@@ -16,7 +16,7 @@ import { GraphQLError } from "graphql";
 import { sign } from "jsonwebtoken";
 import { toLower, upperFirst } from "lodash";
 import { Request } from "express";
-import { isEmail } from "@app/utils/utils";
+import { authenticateGraphQLRoute, isEmail } from "@app/utils/utils";
 import { UserModel } from "@app/models/user.model";
 
 export const UserResolver = {
@@ -27,16 +27,15 @@ export const UserResolver = {
       contextValue: AppContext
     ) {
       const { req } = contextValue;
-      // TODO: validate jwt token
-      if (!req.session?.jwt) {
-        throw new GraphQLError("Please login again.");
-      }
-      const notifications = await getAllNotificationGroups(1);
+      authenticateGraphQLRoute(req);
+      const notifications = await getAllNotificationGroups(
+        req.currentUser!.id!
+      );
       return {
         user: {
-          id: 1,
-          username: "Gabriel",
-          email: "gabriel@mail.com",
+          id: req.currentUser?.id,
+          username: req.currentUser?.username,
+          email: req.currentUser?.email,
           createdAt: new Date(),
         },
         notifications,
