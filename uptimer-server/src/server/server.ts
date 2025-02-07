@@ -25,17 +25,9 @@ import { Envs } from "@app/models/enums/envs";
 import cookieSession from "cookie-session";
 import { expressMiddleware } from "@apollo/server/express4";
 import logger from "./logger";
+import { mergedGQLSchema } from "@app/graphql/schema";
 
 // TESTS
-const typeDefs = `#graphql
-  type User {
-    username: String
-  }
-
-  type Query {
-    user: User
-  }
-`;
 const resolvers = {
   Query: {
     user() {
@@ -52,7 +44,10 @@ export default class MonitorServer {
   constructor(app: Express) {
     this.app = app;
     this.httpServer = new http.Server(app);
-    const schema = makeExecutableSchema({ typeDefs, resolvers });
+    const schema = makeExecutableSchema({
+      typeDefs: mergedGQLSchema,
+      resolvers,
+    });
     this.server = new ApolloServer({
       schema,
       introspection: NODE_ENV !== Envs.PROD,
