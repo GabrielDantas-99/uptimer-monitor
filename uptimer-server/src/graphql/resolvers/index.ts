@@ -1,3 +1,3 @@
-import { UserResolver } from "./user";
+import { UserResolver } from "./user.resolver";
 
 export const resolvers = [UserResolver];
