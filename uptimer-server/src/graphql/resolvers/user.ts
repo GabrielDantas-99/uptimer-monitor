@@ -9,6 +9,7 @@ import {
 import {
   createNewUser,
   getUserByProp,
+  getUserBySocialId,
   getUserByUsernameOrEmail,
 } from "@app/services/user.service";
 import { GraphQLError } from "graphql";
@@ -76,6 +77,39 @@ export const UserResolver = {
         "register"
       );
       return response;
+    },
+    async authSocialUser(
+      _: undefined,
+      args: { user: IUserDocument },
+      contextValue: AppContext
+    ) {
+      const { req } = contextValue;
+      const { username, email, socialId, type } = args.user;
+      // TODO: Add data validation
+      const checkIfUserExist: IUserDocument | undefined =
+        await getUserBySocialId(socialId!, email!, type!);
+      if (checkIfUserExist) {
+        const response: IUserResponse = await userReturnValue(
+          req,
+          checkIfUserExist,
+          "login"
+        );
+        return response;
+      } else {
+        const authData: IUserDocument = {
+          username: upperFirst(username),
+          email: toLower(email),
+          ...(type === "facebook" && { facebookId: socialId }),
+          ...(type === "google" && { facebookId: socialId }),
+        } as IUserDocument;
+        const result: IUserDocument | undefined = await createNewUser(authData);
+        const response: IUserResponse = await userReturnValue(
+          req,
+          result,
+          "register"
+        );
+        return response;
+      }
     },
   },
   User: {
