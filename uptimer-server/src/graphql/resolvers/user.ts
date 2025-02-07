@@ -59,7 +59,7 @@ async function userReturnValue(
       emails: JSON.stringify([result.email]),
     });
     notifications.push(notification);
-  } else if (result && result.id && result.email) {
+  } else if (type === "login" && result && result.id && result.email) {
     notifications = await getAllNotificationGroups(result.id);
   }
   const userJwt: string = sign(
@@ -75,6 +75,7 @@ async function userReturnValue(
     id: result.id,
     email: result.email,
     username: result.username,
+    createdAt: result.createdAt,
   } as IUserDocument;
   return {
     user,
