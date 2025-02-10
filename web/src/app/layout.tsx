@@ -4,6 +4,7 @@ import "./globals.css";
 import { apolloClient } from "@/queries/apolloClient";
 import ApolloProvider from "@/queries/apolloProvider";
 import { Toaster } from "@/components/ui/toaster";
+import MonitorProvider from "@/context/MonitorProvider";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -25,7 +26,9 @@ export default function RootLayout({
         className={`${font.className} antialiased`}
       >
         <ApolloProvider client={apolloClient}>
-          {children}
+          <MonitorProvider>
+            {children}
+          </MonitorProvider>
         </ApolloProvider>
         <Toaster />
       </body>
