@@ -1,32 +1,25 @@
-import { Badge } from "@/components/ui/badge";
+import IndexHeader from "@/app/_components/IndexHeader";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger
+} from "@/components/ui/accordion";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { Binoculars, Check, CloudAlert, Workflow } from "lucide-react";
 import Image from "next/image";
+import { MONITORS } from "./consts/monitors";
+import { FEATURES } from "./consts/features";
+import Footer from "./_components/Footer";
 
 export default function Home() {
 
-  const features = [
-    {
-      icon: <Binoculars />,
-      title: 'Real-time Monitoring',
-      description: 'Monitor service uptime in real-time and get instant notifications for downtime.'
-    },
-    {
-      icon: <Workflow />,
-      title: 'Easy Integration',
-      description: 'Integrate seamlessly with your existing tools and workflows.'
-    },
-    {
-      icon: <CloudAlert />,
-      title: 'Alerting',
-      description: 'Get instant notification of potential issues before they impact your users.'
-    }
-  ];
-  const monitors: string[] = ['HTTP/HTTPS', 'TCP', 'MONGODB', 'REDIS', 'SSL / TLS'];
+  const features = FEATURES;
+  const monitors = MONITORS;
 
   return (
     <div className="">
+      <IndexHeader />
       <main className="flex flex-col gap-8 row-start-2 items-center justify-center sm:items-start md:p-12 md:pt-6 max-w-6xl mx-auto">
         <div className="flex items-center ">
           <div className="w-1/2 flex flex-col space-y-6">
@@ -74,7 +67,14 @@ export default function Home() {
             </div>
           </div>
           <div className="w-1/2 flex justify-end">
-            <Image alt="Undraw dashboard" src={'/data-trends.svg'} width={'400'} height={'400'} />
+            <Image
+              src="https://i.ibb.co/MshLk9P/bg.jpg"
+              alt="API Monitor"
+              className="w-full"
+              width={800}
+              height={800}
+              priority
+            />
           </div>
         </div>
         <div>
@@ -93,18 +93,26 @@ export default function Home() {
             </div>
           </Card>
         </div>
-        <div className="flex items-center flex-col gap-4 mx-auto">
+        <div className="flex items-center flex-col gap-4 mx-auto w-full">
           <h1 className="text-2xl font-medium">Monitors</h1>
-          <div className="flex items-center gap-4 mx-auto">
-            {monitors.map((monitor, index) => (
-              <Badge className="rounded-full  cursor-pointer flex items-center gap-2 text-base font-medium" key={index} >
-                <Check size={18} />
-                {monitor}
-              </Badge>
-            ))}
+          <div className="flex items-center gap-4 mx-auto w-full ">
+            <Accordion type="single" collapsible className="w-full min-w-full">
+              {monitors.map((monitor, index) => (
+                <AccordionItem key={index} value={`item-${index}`}>
+                  <AccordionTrigger>
+                    {monitor.title}
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    {monitor.description}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }
