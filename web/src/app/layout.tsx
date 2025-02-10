@@ -3,7 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { apolloClient } from "@/queries/apolloClient";
 import ApolloProvider from "@/queries/apolloProvider";
-import IndexHeader from "@/app/_components/IndexHeader";
+import { Toaster } from "@/components/ui/toaster";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -27,6 +27,7 @@ export default function RootLayout({
         <ApolloProvider client={apolloClient}>
           {children}
         </ApolloProvider>
+        <Toaster />
       </body>
     </html>
   );

@@ -1,5 +1,6 @@
 import { IUserAuth } from '@/interfaces/user.interface';
 import { REGISTER_USER } from '@/queries/auth';
+import showErrorToast from '@/utils/toast';
 import { registerSchema, RegisterType } from '@/validations/auth';
 import { FetchResult, useMutation } from '@apollo/client';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
@@ -35,8 +36,7 @@ export const useRegister = (): IUserAuth => {
         }
       }
     } catch (error) {
-      // TODO: Add toast method
-      console.log(error);
+      showErrorToast('Invalid credentials!');
     }
   };
   return {
