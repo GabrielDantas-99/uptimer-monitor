@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
-import { RegisterType } from '@/validations/auth';
 import { INotification } from './notification.interface';
-import { LoginType } from '@/app/(auth)/_validations/auth';
+import { LoginType, RegisterType } from '@/app/(auth)/_validations/auth';
 
 export interface InitialUpdateType {
   notifications: INotification[];
