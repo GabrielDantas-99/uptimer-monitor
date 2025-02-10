@@ -8,13 +8,15 @@ export interface IButtonProps {
   type?: 'button' | 'submit' | 'reset' | undefined;
   id?: string;
   className?: string;
+  children: ReactNode;
   role?: string;
   onClick?: (event?: any) => void;
   disabled?: boolean;
+  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
 }
 
 const Button: FC<IButtonProps> = (props): ReactElement => {
-  const { id, label, icon, className, disabled, role, type, onClick } = props;
+  const { id, label, icon, className, disabled, role, type, onClick, variant, children } = props;
 
   return (
     <ButtonCN
@@ -24,8 +26,9 @@ const Button: FC<IButtonProps> = (props): ReactElement => {
       role={role}
       disabled={disabled}
       onClick={onClick}
+      variant={variant}
     >
-      {icon}{label}
+      {children}
     </ButtonCN>
   )
 }

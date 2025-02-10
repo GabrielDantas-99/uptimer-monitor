@@ -1,5 +1,7 @@
+'use client'
+
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import Button from "@/app/_components/Button"
 import {
   Card,
   CardContent,
@@ -10,11 +12,14 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
+import { useRegister } from "../(pages)/create-account/useRegister"
 
 export function RegisterForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const { onRegisterSubmit } = useRegister();
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -25,7 +30,7 @@ export function RegisterForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form action={onRegisterSubmit}>
             <div className="grid gap-6">
               <div className="flex flex-col gap-4">
                 <Button variant="outline" className="w-full">
