@@ -4,6 +4,7 @@ export const registerSchema = z.object({
   username: z
     .string({ required_error: 'Username is a required field!' })
     .min(4, { message: 'Least 4 characters are required!' })
+    .trim()
     .optional(),
   email: z.string({ required_error: 'Email is a required field!' }).email(),
   password: z

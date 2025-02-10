@@ -9,15 +9,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useRegister } from "../(pages)/create-account/useRegister"
+import TextInput from "@/app/_components/TextInput"
+
+interface RegisterFormProps {
+  className: string;
+  props: any
+}
 
 export function RegisterForm({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<"div">) {
+}: RegisterFormProps) {
   const { onRegisterSubmit } = useRegister();
 
   return (
@@ -60,27 +65,27 @@ export function RegisterForm({
               <div className="grid gap-6">
                 <div className="grid gap-2">
                   <Label htmlFor="username">Username</Label>
-                  <Input
+                  <TextInput
                     id="username"
+                    name="username"
                     type="text"
                     placeholder="Harvey Specter"
-                    required
                   />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input
+                  <TextInput
                     id="email"
+                    name="email"
                     type="email"
                     placeholder="m@example.com"
-                    required
                   />
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="password" >Password</Label>
                   </div>
-                  <Input id="password" type="password" required />
+                  <TextInput id="password" name="password" type="password" />
                 </div>
                 <Button type="submit" className="w-full">
                   Register

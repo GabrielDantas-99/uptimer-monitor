@@ -88,6 +88,9 @@ export const UserResolver = {
       const { user } = args;
       await UserLoginRules.validate(user, { abortEarly: false });
       const { username, email, password } = user;
+      console.log(username);
+      console.log(email);
+      console.log(password);
       // TODO: Add data validation
       const checkIfUserExist: IUserDocument | undefined =
         await getUserByUsernameOrEmail(username!, email!);
