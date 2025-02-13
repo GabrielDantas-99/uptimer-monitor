@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
     ],
+    "target": "es2015",
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -29,12 +29,11 @@
     }
   },
   "include": [
+    "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "next-env.d.ts",
-    "build/types/**/*.ts",
-    "next.config.js"
+    "build/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

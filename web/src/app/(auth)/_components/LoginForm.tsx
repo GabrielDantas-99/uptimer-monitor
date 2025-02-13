@@ -1,3 +1,5 @@
+'use client'
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -29,7 +31,7 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form action={onLoginSubmit}>
             <div className="grid gap-6">
               <div className="flex flex-col gap-4">
                 <Button variant="outline" className="w-full">
@@ -75,11 +77,12 @@ export function LoginForm({
                   <Input
                     id="password"
                     type="password"
+                    name="password"
                     className={clsx({
-                      'border border-red-400': validationErrors!.username
+                      'border border-red-400': validationErrors!.password
                     })}
                     onChange={() => {
-                      setValidationErrors!({ ...validationErrors!, username: '' })
+                      setValidationErrors!({ ...validationErrors!, password: '' })
                     }}
                   />
                 </div>

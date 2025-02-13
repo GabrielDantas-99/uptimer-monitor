@@ -10,7 +10,6 @@ export const registerSchema = z.object({
     .string({ required_error: 'Password is a required field. ' })
     .min(4, { message: 'Password must be at least 4 characters.' })
     .optional(),
-  socialId: z.string().optional(),
   type: z.string().optional(),
 });
 
@@ -36,7 +35,6 @@ export const loginSchema = z.object({
     .string({ required_error: 'Password is a required field.' })
     .min(4, { message: 'Password must be at least 4 characters.' })
     .optional(),
-  socialId: z.string().optional(),
   type: z.string().optional(),
 });
 

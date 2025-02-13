@@ -16,7 +16,6 @@ import TextInput from "@/app/_components/TextInput"
 import clsx from "clsx"
 import Image from "next/image"
 import PageLoader from "./PageLoader"
-import { useState } from "react"
 import { Loader } from "lucide-react"
 
 interface RegisterFormProps {
