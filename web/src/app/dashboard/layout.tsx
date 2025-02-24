@@ -7,7 +7,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <ProtectedRoute>
       <SidebarProvider>
         <AppSidebar />
-        <main>
+        <main className="w-full">
           <SidebarTrigger />
           {children}
         </main>

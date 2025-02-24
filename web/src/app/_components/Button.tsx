@@ -8,11 +8,11 @@ export interface IButtonProps {
   type?: 'button' | 'submit' | 'reset' | undefined;
   id?: string;
   className?: string;
-  children: ReactNode;
+  children?: ReactNode;
   role?: string;
   onClick?: (event?: any) => void;
   disabled?: boolean;
-  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "success" | "warn";
 }
 
 const Button: FC<IButtonProps> = (props): ReactElement => {
@@ -28,7 +28,8 @@ const Button: FC<IButtonProps> = (props): ReactElement => {
       onClick={onClick}
       variant={variant}
     >
-      {children}
+      {icon}
+      {children !== undefined ? children : label}
     </ButtonCN>
   )
 }
