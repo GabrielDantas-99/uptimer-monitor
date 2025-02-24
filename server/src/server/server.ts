@@ -28,11 +28,7 @@ import logger from "./logger";
 import { mergedGQLSchema } from "@app/graphql/schema";
 import { BaseContext } from "@apollo/server";
 import { resolvers } from "@app/graphql/resolvers";
-
-export interface AppContext {
-  req: Request;
-  res: Response;
-}
+import { AppContext } from "@app/interfaces/monitor.interface";
 
 export default class MonitorServer {
   private app: Express;
