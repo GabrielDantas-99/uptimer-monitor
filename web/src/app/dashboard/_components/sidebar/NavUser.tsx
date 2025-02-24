@@ -29,18 +29,28 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { useMutation } from "@apollo/client"
+import { LOGOUT_USER } from "@/queries/auth"
+import { MonitorContext } from "@/context/MonitorContext"
+import { useContext } from "react"
+import { apolloPersistor } from "@/queries/apolloClient"
+import { useRouter } from "next/navigation"
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string
-    email: string
-    avatar: string
-  }
-}) {
+type NavUserProps = {
+  user: User,
+}
+
+type User = {
+  name: string
+  email: string
+  avatar: string
+}
+
+export function NavUser({ user }: NavUserProps) {
   const { isMobile } = useSidebar()
-
+  const [logout, { client }] = useMutation(LOGOUT_USER)
+  const { dispatch } = useContext(MonitorContext);
+  const router = useRouter()
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -102,9 +112,24 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={async () => {
+              dispatch({
+                type: "dataUpdate",
+                payload: {
+                  user: null,
+                  notifications: [],
+                },
+              });
+              await Promise.all([
+                client.clearStore(),
+                logout(),
+                apolloPersistor?.purge(),
+              ]);
+              router.push('/')
+            }}>
+
               <LogOut />
-              Log out
+              Logout
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
