@@ -30,27 +30,25 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { useMutation } from "@apollo/client"
-import { LOGOUT_USER } from "@/queries/auth"
+import { CHECK_CURRENT_USER, LOGOUT_USER } from "@/queries/auth"
 import { MonitorContext } from "@/context/MonitorContext"
-import { useContext } from "react"
-import { apolloPersistor } from "@/queries/apolloClient"
+import { useContext, useEffect, useState } from "react"
+import { apolloClient, apolloPersistor } from "@/queries/apolloClient"
 import { useRouter } from "next/navigation"
+import { IUser } from "@/interfaces/user.interface"
 
-type NavUserProps = {
-  user: User,
-}
-
-type User = {
-  name: string
-  email: string
-  avatar: string
-}
-
-export function NavUser({ user }: NavUserProps) {
+export function NavUser() {
+  const [user, setUser] = useState<IUser>();
   const { isMobile } = useSidebar()
   const [logout, { client }] = useMutation(LOGOUT_USER)
   const { dispatch } = useContext(MonitorContext);
   const router = useRouter()
+  const userData = apolloClient.readQuery({
+    query: CHECK_CURRENT_USER
+  })
+  useEffect(() => {
+    setUser(userData?.checkCurrentUser?.user);
+  }, [userData]);
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -61,12 +59,12 @@ export function NavUser({ user }: NavUserProps) {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
+                <AvatarImage src={user?.avatar} alt={user?.username} />
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-semibold">{user?.username}</span>
+                <span className="truncate text-xs">{user?.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -80,12 +78,12 @@ export function NavUser({ user }: NavUserProps) {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarImage src={user?.avatar} alt={user?.username} />
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate font-semibold">{user?.username}</span>
+                  <span className="truncate text-xs">{user?.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
