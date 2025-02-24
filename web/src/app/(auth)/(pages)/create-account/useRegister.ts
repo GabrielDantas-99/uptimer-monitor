@@ -70,7 +70,7 @@ async function submitUserData(
           notifications: registerUser.notifications,
         },
       });
-      router.push('/status');
+      router.push('/dashboard');
     }
   } catch (error) {
     showErrorToast('Invalid credentials');
