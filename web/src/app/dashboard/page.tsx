@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from "react";
-import { renderButtons, renderRefreshButtons } from "./_components/HomeComponents";
+import { renderButtons, renderRefreshButtons, renderTableAndPagination } from "./_components/HomeComponents";
 
 const DashboardPage = () => {
   const [monitorState, setMonitorState] = useState({
@@ -13,6 +13,12 @@ const DashboardPage = () => {
     <div className="m-auto px-6 h-screen relative min-h-screen xl:container md:px-12 lg:px-6">
       {renderButtons([], monitorState, setMonitorState)}
       {renderRefreshButtons('box', true)}
+      {renderTableAndPagination(
+        'box',
+        { start: 0, end: 10 },
+        monitorState.autoRefreshLoading,
+        []
+      )}
     </div>
   );
 }

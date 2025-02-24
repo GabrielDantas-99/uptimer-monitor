@@ -1,6 +1,7 @@
 import {
   IMonitorDocument,
   IMonitorState,
+  IPagination,
 } from "@/interfaces/monitor.interface";
 import { Dispatch, SetStateAction } from "react";
 import HomeButtonGroup from "./HomeButtonGroup";
@@ -9,6 +10,8 @@ import TextInput from "@/app/_components/TextInput";
 import clsx from "clsx";
 import { Play } from "lucide-react";
 import SwitchView from "./SwitchView";
+import HomeGrid from "./HomeGrid";
+import HomeTable from "./HomeTable";
 
 export const renderButtons = (
   monitors: IMonitorDocument[],
@@ -61,3 +64,22 @@ export const renderRefreshButtons = (
   );
 };
 
+export const renderTableAndPagination = (
+  view: string,
+  limit: IPagination,
+  autoRefreshLoading: boolean,
+  monitors: IMonitorDocument[],
+  updateLimit?: (newLimit: IPagination) => void
+): JSX.Element => {
+  return (
+    <>
+      <div className="my-4">
+        {view === 'box' ? (
+          <HomeTable limit={limit} monitors={monitors} autoRefreshLoading={autoRefreshLoading} />
+        ) : (
+          <HomeGrid limit={limit} monitors={monitors} autoRefreshLoading={autoRefreshLoading} />
+        )}
+      </div>
+    </>
+  );
+}
