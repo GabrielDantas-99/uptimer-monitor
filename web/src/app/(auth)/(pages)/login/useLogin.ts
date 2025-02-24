@@ -71,7 +71,7 @@ async function submitUserData(
           notifications: loginUser.notifications,
         },
       });
-      router.push('/status');
+      router.push('/dashboard');
     }
   } catch (error) {
     showErrorToast('Invalid credentials');

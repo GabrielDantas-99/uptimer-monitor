@@ -14,6 +14,7 @@ export interface IUser {
   email?: string;
   password?: string;
   createdAt?: Date;
+  avatar?: string;
 }
 
 export interface IUserAuth {
