@@ -114,7 +114,7 @@ export const stopSingleBackgroundJob = (
     scheduled.stop();
     if (monitorId) {
       logger.info(
-        `Stopped cron job for monitor with ID ${monitorId} and name ${name}`
+        `Stopped cron job for monitor with ID: ${monitorId} and name: ${name}`
       );
     } else {
       logger.info(`Stopped cron job for ${name}`);
