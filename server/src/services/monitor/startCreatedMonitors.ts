@@ -2,7 +2,7 @@ import { IMonitorDocument } from "@app/interfaces/monitor.interface";
 import { httpStatusMonitor } from "../http.service";
 import { toLower } from "lodash";
 
-enum MonitorType {
+export enum MonitorType {
   HTTP = "http",
   TCP = "tcp",
   MONGO = "mongodb",

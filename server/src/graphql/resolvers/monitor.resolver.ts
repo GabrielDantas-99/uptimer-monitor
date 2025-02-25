@@ -22,6 +22,7 @@ import {
 } from "@app/utils/utils";
 import { some, toLower } from "lodash";
 import { PubSub } from "graphql-subscriptions";
+import { getHeartbeats } from "@app/services/heartbeat.service";
 
 export const pubSub: PubSub = new PubSub();
 
@@ -194,6 +195,10 @@ export const MonitorResolver = {
     },
     notifications: (monitor: IMonitorDocument) => {
       return getSingleNotificationGroup(monitor.notificationId!);
+    },
+    heartbeats: async (monitor: IMonitorDocument) => {
+      const heartbeats = await getHeartbeats(monitor.type, monitor.id!, 24);
+      return heartbeats.slice(0, 16);
     },
   },
   Subscription: {
