@@ -1,7 +1,6 @@
 import { INotificationDocument } from "@app/interfaces/notification.interface";
 import { IUserDocument, IUserResponse } from "@app/interfaces/user.interface";
 import { JWT_TOKEN } from "@app/server/config";
-import { AppContext } from "@app/server/server";
 import {
   createNotificationGroup,
   getAllNotificationGroups,
@@ -19,6 +18,7 @@ import { Request } from "express";
 import { authenticateGraphQLRoute, isEmail } from "@app/utils/utils";
 import { UserModel } from "@app/models/user.model";
 import { UserLoginRules } from "@app/validations";
+import { AppContext } from "@app/interfaces/monitor.interface";
 
 export const UserResolver = {
   Query: {
