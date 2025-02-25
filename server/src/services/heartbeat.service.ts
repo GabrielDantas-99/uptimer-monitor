@@ -1,6 +1,7 @@
 import { IHeartbeat } from "@app/interfaces/heartbeat.interface";
 import { getHttpHeartBeatsByDuration } from "./http.service";
 import { MonitorType } from "./monitor/startCreatedMonitors";
+import { HttpModel } from "@app/models/http.model";
 
 /**
  * Get monitor heartbeats
@@ -28,4 +29,19 @@ export const getHeartbeats = async (
     console.log("REDIS");
   }
   return heartbeats;
+};
+
+export const deleteMonitorTypeHeartbeats = async (
+  monitorId: number,
+  type: string
+): Promise<void> => {
+  let model = null;
+  if (type === MonitorType.HTTP) {
+    model = HttpModel;
+  }
+  if (model !== null) {
+    await model.destroy({
+      where: { monitorId },
+    });
+  }
 };

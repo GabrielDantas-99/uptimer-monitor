@@ -19,10 +19,12 @@ import {
   appTimeZone,
   authenticateGraphQLRoute,
   resumeMonitors,
+  uptimePercentage,
 } from "@app/utils/utils";
 import { some, toLower } from "lodash";
 import { PubSub } from "graphql-subscriptions";
 import { getHeartbeats } from "@app/services/heartbeat.service";
+import { IHeartbeat } from "@app/interfaces/heartbeat.interface";
 
 export const pubSub: PubSub = new PubSub();
 
@@ -199,6 +201,14 @@ export const MonitorResolver = {
     heartbeats: async (monitor: IMonitorDocument) => {
       const heartbeats = await getHeartbeats(monitor.type, monitor.id!, 24);
       return heartbeats.slice(0, 16);
+    },
+    uptime: async (monitor: IMonitorDocument): Promise<number> => {
+      const heartbeats: IHeartbeat[] = await getHeartbeats(
+        monitor.type,
+        monitor.id!,
+        24
+      );
+      return uptimePercentage(heartbeats);
     },
   },
   Subscription: {

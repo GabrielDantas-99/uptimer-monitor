@@ -2,6 +2,7 @@ import { IMonitorDocument } from "@app/interfaces/monitor.interface";
 import { getSingleNotificationGroup } from "../notification.service";
 import { getHeartbeats } from "../heartbeat.service";
 import { getUserMonitors } from "../monitor.service";
+import { uptimePercentage } from "@app/utils/utils";
 
 /**
  * Get all active monitors for a user
@@ -17,10 +18,10 @@ export const _getUserActiveMonitors = async (
     for (let monitor of monitors) {
       const group = await getSingleNotificationGroup(monitor.notificationId!);
       const heartbeats = await getHeartbeats(monitor.type, monitor.id!, 24);
-      // TODO: Calculate uptime
+      const uptime = uptimePercentage(heartbeats);
       monitor = {
         ...monitor,
-        uptime: 0,
+        uptime,
         heartbeats: heartbeats.slice(0, 16),
         notifications: group,
       };
