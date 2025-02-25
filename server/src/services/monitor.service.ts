@@ -5,6 +5,7 @@ import { _getMonitorById } from "./monitor/getMonitorById";
 import { _getUserActiveMonitors } from "./monitor/getUserActiveMonitors";
 import { _toggleMonitor } from "./monitor/toggleMonitor";
 import { _updateMonitorStatus } from "./monitor/updateMonitorStatus";
+import { _deleteSingleMonitor } from "./monitor/deleteSingleMonitor";
 
 export async function createMonitor(
   data: IMonitorDocument
@@ -50,4 +51,12 @@ export async function updateMonitorStatus(
   type: string
 ): Promise<IMonitorDocument> {
   return _updateMonitorStatus(monitor, timestamp, type);
+}
+
+export async function deleteSingleMonitor(
+  monitorId: number,
+  userId: number,
+  type: string
+): Promise<IMonitorDocument[]> {
+  return _deleteSingleMonitor(monitorId, userId, type);
 }
