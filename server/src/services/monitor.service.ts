@@ -6,6 +6,9 @@ import { _getUserActiveMonitors } from "./monitor/getUserActiveMonitors";
 import { _toggleMonitor } from "./monitor/toggleMonitor";
 import { _updateMonitorStatus } from "./monitor/updateMonitorStatus";
 import { _deleteSingleMonitor } from "./monitor/deleteSingleMonitor";
+import { _updateSingleMonitor } from "./monitor/updateSingleMonitor";
+import { _getUserMonitors } from "./monitor/getUserMonitors";
+import { _startCreatedMonitors } from "./monitor/startCreatedMonitors";
 
 export async function createMonitor(
   data: IMonitorDocument
@@ -23,6 +26,13 @@ export async function getMonitorById(
   return _getMonitorById(monitorId);
 }
 
+export async function getUserMonitors(
+  userId: number,
+  active?: boolean
+): Promise<IMonitorDocument[]> {
+  return _getUserMonitors(userId, active);
+}
+
 export async function getUserActiveMonitors(
   userId: number
 ): Promise<IMonitorDocument[]> {
@@ -37,7 +47,7 @@ export async function toggleMonitor(
   return _toggleMonitor(monitorId, userId, active);
 }
 
-export async function _updateSingleMonitor(
+export async function updateSingleMonitor(
   monitorId: number,
   userId: number,
   data: IMonitorDocument
@@ -59,4 +69,12 @@ export async function deleteSingleMonitor(
   type: string
 ): Promise<IMonitorDocument[]> {
   return _deleteSingleMonitor(monitorId, userId, type);
+}
+
+export async function startCreatedMonitors(
+  monitor: IMonitorDocument,
+  name: string,
+  type: string
+): Promise<void> {
+  return _startCreatedMonitors(monitor, name, type);
 }

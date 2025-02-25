@@ -23,7 +23,7 @@ export async function getSingleNotificationGroup(
         where: {
           id: notificationId,
         },
-        order: ["createdAt", "DESC"],
+        order: [["createdAt", "DESC"]],
       })) as unknown as INotificationDocument;
     return notifications;
   } catch (error) {
