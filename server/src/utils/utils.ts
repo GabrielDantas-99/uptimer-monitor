@@ -7,9 +7,13 @@ import { IMonitorDocument } from "@app/interfaces/monitor.interface";
 import {
   getAllUsersActiveMonitors,
   getMonitorById,
+  getUserActiveMonitors,
   startCreatedMonitors,
 } from "@app/services/monitor.service";
 import { toLower } from "lodash";
+import { pubSub } from "@app/graphql/resolvers/monitor.resolver";
+import { startSingleJob } from "./jobs";
+import logger from "@app/server/logger";
 
 export const appTimeZone: string =
   Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -86,4 +90,51 @@ export const resumeMonitors = async (monitorId: number): Promise<void> => {
   const monitor: IMonitorDocument = await getMonitorById(monitorId);
   startCreatedMonitors(monitor, toLower(monitor.name), monitor.type);
   await sleep(getRandomInt(300, 1000));
+};
+
+/**
+ * Enables auto refresh cron job
+ * @param cookies
+ */
+export const enableAutoRefreshJob = (cookies: string): void => {
+  const result: Record<string, string> = getCookies(cookies);
+  const session: string = Buffer.from(result.session, "base64").toString();
+  const payload: IAuthPayload = verify(
+    JSON.parse(session).jwt,
+    JWT_TOKEN
+  ) as IAuthPayload;
+  const enableAutoRefresh: boolean = JSON.parse(session).enableAutomaticRefresh;
+  if (enableAutoRefresh) {
+    startSingleJob(
+      `${toLower(payload.username)}`,
+      appTimeZone,
+      10,
+      async () => {
+        const monitors: IMonitorDocument[] = await getUserActiveMonitors(
+          payload.id
+        );
+        logger.info("Job is enabled");
+        pubSub.publish("MONITORS_UPDATED", {
+          monitorsUpdated: {
+            userId: payload.id,
+            monitors,
+          },
+        });
+      }
+    );
+  }
+};
+
+/**
+ * Get all key/values in cookie
+ * @param cookie
+ * @returns {Record<string, string>}
+ */
+const getCookies = (cookie: string): Record<string, string> => {
+  const cookies: Record<string, string> = {};
+  cookie.split(";").forEach((cookieData) => {
+    const parts: RegExpMatchArray | null = cookieData.match(/(.*?)=(.*)$/);
+    cookies[parts![1].trim()] = (parts![2] || "").trim();
+  });
+  return cookies;
 };
