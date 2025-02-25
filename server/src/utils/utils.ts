@@ -125,6 +125,10 @@ export const enableAutoRefreshJob = (cookies: string): void => {
   }
 };
 
+export const encodeBase64 = (user: string, pass: string): string => {
+  return Buffer.from(`${user || ""}:${pass || ""}`).toString("base64");
+};
+
 /**
  * Get all key/values in cookie
  * @param cookie
