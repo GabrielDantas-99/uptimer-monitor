@@ -9,6 +9,9 @@ import { _deleteSingleMonitor } from "./monitor/deleteSingleMonitor";
 import { _updateSingleMonitor } from "./monitor/updateSingleMonitor";
 import { _getUserMonitors } from "./monitor/getUserMonitors";
 import { _startCreatedMonitors } from "./monitor/startCreatedMonitors";
+import { IHeartbeat } from "@app/interfaces/heartbeat.interface";
+import { _getHeartbeats } from "./monitor/getHeartBeats";
+import { _deleteMonitorTypeHeartbeats } from "./monitor/deleteMonitorTypeHeartbeats";
 
 export async function createMonitor(
   data: IMonitorDocument
@@ -77,4 +80,19 @@ export async function startCreatedMonitors(
   type: string
 ): Promise<void> {
   return _startCreatedMonitors(monitor, name, type);
+}
+
+export async function deleteMonitorTypeHeartbeats(
+  monitorId: number,
+  type: string
+): Promise<void> {
+  return _deleteMonitorTypeHeartbeats(monitorId, type);
+}
+
+export async function getHeartbeats(
+  type: string,
+  monitorId: number,
+  duration: number
+): Promise<IHeartbeat[]> {
+  return _getHeartbeats(type, monitorId, duration);
 }
