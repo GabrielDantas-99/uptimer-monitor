@@ -1,5 +1,8 @@
 import { IHeartbeat } from "@app/interfaces/heartbeat.interface";
+import { IMonitorDocument } from "@app/interfaces/monitor.interface";
 import { HttpModel } from "@app/models/http.model";
+import { startSingleJob } from "@app/utils/jobs";
+import { appTimeZone } from "@app/utils/utils";
 import dayjs from "dayjs";
 import { Model, Op } from "sequelize";
 
@@ -39,4 +42,26 @@ export const getHttpHeartBeatsByDuration = async (
   } catch (error) {
     throw new Error(error);
   }
+};
+
+export const httpStatusMonitor = (
+  monitor: IMonitorDocument,
+  name: string
+): void => {
+  const httpMonitorData: IMonitorDocument = {
+    monitorId: monitor.id,
+    httpAuthMethod: monitor.httpAuthMethod,
+    basicAuthUser: monitor.basicAuthUser,
+    basicAuthPass: monitor.basicAuthPass,
+    url: monitor.url,
+    method: monitor.method,
+    headers: monitor.headers,
+    body: monitor.body,
+    timeout: monitor.timeout,
+    redirects: monitor.redirects,
+    bearerToken: monitor.bearerToken,
+  } as IMonitorDocument;
+  startSingleJob(name, appTimeZone, monitor.frequency, async () =>
+    console.log(httpMonitorData)
+  );
 };

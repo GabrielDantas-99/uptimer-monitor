@@ -1,4 +1,6 @@
 import { IMonitorDocument } from "@app/interfaces/monitor.interface";
+import { httpStatusMonitor } from "../http.service";
+import { toLower } from "lodash";
 
 enum MonitorType {
   HTTP = "http",
@@ -19,7 +21,7 @@ export const _startCreatedMonitors = (
   type: string
 ): void => {
   if (type === MonitorType.HTTP) {
-    console.log("HTTP", monitor.name, name);
+    httpStatusMonitor(monitor!, toLower(name));
   }
   if (type === MonitorType.TCP) {
     console.log("TCP", monitor.name, name);
