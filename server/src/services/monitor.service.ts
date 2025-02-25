@@ -6,6 +6,7 @@ import { _getUserActiveMonitors } from "./monitor/getUserActiveMonitors";
 import { _toggleMonitor } from "./monitor/toggleMonitor";
 import { _updateMonitorStatus } from "./monitor/updateMonitorStatus";
 import { _deleteSingleMonitor } from "./monitor/deleteSingleMonitor";
+import { _updateSingleMonitor } from "./monitor/updateSingleMonitor";
 
 export async function createMonitor(
   data: IMonitorDocument
@@ -37,7 +38,7 @@ export async function toggleMonitor(
   return _toggleMonitor(monitorId, userId, active);
 }
 
-export async function _updateSingleMonitor(
+export async function updateSingleMonitor(
   monitorId: number,
   userId: number,
   data: IMonitorDocument

@@ -4,7 +4,12 @@ import {
   IMonitorDocument,
 } from "@app/interfaces/monitor.interface";
 import logger from "@app/server/logger";
-import { createMonitor, toggleMonitor } from "@app/services/monitor.service";
+import {
+  createMonitor,
+  deleteSingleMonitor,
+  toggleMonitor,
+  updateSingleMonitor,
+} from "@app/services/monitor.service";
 import { startSingleJob, stopSingleBackgroundJob } from "@app/utils/jobs";
 import { appTimeZone, authenticateGraphQLRoute } from "@app/utils/utils";
 
@@ -43,20 +48,6 @@ export const MonitorResolver = {
         userId,
         active as boolean
       );
-      //   const hasActiveMonitors: boolean = some(
-      //     results,
-      //     (monitor: IMonitorDocument) => monitor.active
-      //   );
-      /**
-       * Stop auto refresh if there are no active monitors for single user
-       */
-      //   if (!hasActiveMonitors) {
-      //     req.session = {
-      //       ...req.session,
-      //       enableAutomaticRefresh: false,
-      //     };
-      //     stopSingleBackgroundJob(`${toLower(req.currentUser?.username)}`);
-      //   }
       if (!active) {
         console.log("stopSingleBackgroundJob");
         stopSingleBackgroundJob(name, monitorId!);
@@ -69,6 +60,40 @@ export const MonitorResolver = {
       }
       return {
         monitors: results,
+      };
+    },
+    async updateMonitor(
+      _: undefined,
+      args: IMonitorArgs,
+      contextValue: AppContext
+    ) {
+      const { req } = contextValue;
+      authenticateGraphQLRoute(req);
+      const { monitorId, userId, monitor } = args;
+      const monitors: IMonitorDocument[] = await updateSingleMonitor(
+        parseInt(`${monitorId}`),
+        parseInt(`${userId}`),
+        monitor!
+      );
+      return {
+        monitors,
+      };
+    },
+    async deleteMonitor(
+      _: undefined,
+      args: IMonitorArgs,
+      contextValue: AppContext
+    ) {
+      const { req } = contextValue;
+      authenticateGraphQLRoute(req);
+      const { monitorId, userId, type } = args;
+      await deleteSingleMonitor(
+        parseInt(`${monitorId}`),
+        parseInt(`${userId}`),
+        type!
+      );
+      return {
+        id: monitorId,
       };
     },
   },
