@@ -2,6 +2,7 @@ import { IHeartbeat } from "@app/interfaces/heartbeat.interface";
 import { getHttpHeartBeatsByDuration } from "./http.service";
 import { MonitorType } from "./monitor/startCreatedMonitors";
 import { HttpModel } from "@app/models/http.model";
+import { getMongoHeartBeatsByDuration } from "./mongodb.service";
 
 /**
  * Get monitor heartbeats
@@ -23,7 +24,7 @@ export const getHeartbeats = async (
     console.log("TCP");
   }
   if (type === MonitorType.MONGO) {
-    console.log("MONGO");
+    heartbeats = await getMongoHeartBeatsByDuration(monitorId, duration);
   }
   if (type === MonitorType.REDIS) {
     console.log("REDIS");
