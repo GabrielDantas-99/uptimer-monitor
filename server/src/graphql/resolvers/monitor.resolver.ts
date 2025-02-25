@@ -10,12 +10,17 @@ import {
   getMonitorById,
   getUserActiveMonitors,
   getUserMonitors,
+  startCreatedMonitors,
   toggleMonitor,
   updateSingleMonitor,
 } from "@app/services/monitor.service";
 import { getSingleNotificationGroup } from "@app/services/notification.service";
 import { startSingleJob, stopSingleBackgroundJob } from "@app/utils/jobs";
-import { appTimeZone, authenticateGraphQLRoute } from "@app/utils/utils";
+import {
+  appTimeZone,
+  authenticateGraphQLRoute,
+  resumeMonitors,
+} from "@app/utils/utils";
 import { toLower } from "lodash";
 
 export const MonitorResolver = {
@@ -95,11 +100,7 @@ export const MonitorResolver = {
       const body: IMonitorDocument = args.monitor!;
       const monitor: IMonitorDocument = await createMonitor(body);
       if (body.active && monitor?.active) {
-        // TODO: start created monitor
-        logger.info("start new monitor");
-        startSingleJob(body.name, appTimeZone, 10, () =>
-          logger.info("this is called every 10 seconds")
-        );
+        startCreatedMonitors(monitor, toLower(body.name), body.type);
       }
       return {
         monitors: [monitor],
@@ -122,11 +123,7 @@ export const MonitorResolver = {
         console.log("stopSingleBackgroundJob");
         stopSingleBackgroundJob(name, monitorId!);
       } else {
-        // TODO: Add a resume method here
-        logger.info("Resume monitor");
-        startSingleJob(name, appTimeZone, 10, () =>
-          logger.info("Resumed after 10 seconds")
-        );
+        resumeMonitors(monitorId!);
       }
       return {
         monitors: results,
