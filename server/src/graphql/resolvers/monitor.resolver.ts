@@ -8,6 +8,7 @@ import {
   createMonitor,
   deleteSingleMonitor,
   getMonitorById,
+  getUserActiveMonitors,
   getUserMonitors,
   toggleMonitor,
   updateSingleMonitor,
@@ -15,6 +16,7 @@ import {
 import { getSingleNotificationGroup } from "@app/services/notification.service";
 import { startSingleJob, stopSingleBackgroundJob } from "@app/utils/jobs";
 import { appTimeZone, authenticateGraphQLRoute } from "@app/utils/utils";
+import { toLower } from "lodash";
 
 export const MonitorResolver = {
   Query: {
@@ -44,6 +46,41 @@ export const MonitorResolver = {
       );
       return {
         monitors,
+      };
+    },
+    async autoRefresh(
+      _: undefined,
+      { userId, refresh }: { userId: string; refresh: boolean },
+      contextValue: AppContext
+    ) {
+      const { req } = contextValue;
+      authenticateGraphQLRoute(req);
+      if (refresh) {
+        req.session = {
+          ...req.session,
+          enableAutomaticRefresh: true,
+        };
+        startSingleJob(
+          `${toLower(req.currentUser?.username)}`,
+          appTimeZone,
+          10,
+          async () => {
+            const monitors: IMonitorDocument[] = await getUserActiveMonitors(
+              parseInt(userId!)
+            );
+            // TODO: Publish data to client
+            logger.info(monitors[0].name);
+          }
+        );
+      } else {
+        req.session = {
+          ...req.session,
+          enableAutomaticRefresh: false,
+        };
+        stopSingleBackgroundJob(`${toLower(req.currentUser?.username)}`);
+      }
+      return {
+        refresh,
       };
     },
   },
