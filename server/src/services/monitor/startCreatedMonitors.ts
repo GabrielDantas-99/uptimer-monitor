@@ -1,7 +1,14 @@
 import { IMonitorDocument } from "@app/interfaces/monitor.interface";
-import { MonitorType } from "../enums/MonitorType.enum";
-import { mongoStatusMonitor } from "../mongodb.service";
+import { httpStatusMonitor } from "../http.service";
 import { toLower } from "lodash";
+import { mongoStatusMonitor } from "../mongodb.service";
+
+export enum MonitorType {
+  HTTP = "http",
+  TCP = "tcp",
+  MONGO = "mongodb",
+  REDIS = "redis",
+}
 
 /**
  * Start uptime monitors
@@ -15,7 +22,7 @@ export const _startCreatedMonitors = (
   type: string
 ): void => {
   if (type === MonitorType.HTTP) {
-    console.log("HTTP", monitor.name, name);
+    httpStatusMonitor(monitor!, toLower(name));
   }
   if (type === MonitorType.TCP) {
     console.log("TCP", monitor.name, name);
