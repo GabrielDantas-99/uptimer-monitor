@@ -1,6 +1,7 @@
 import { IMonitorDocument } from "@app/interfaces/monitor.interface";
 import { httpStatusMonitor } from "../http.service";
 import { toLower } from "lodash";
+import { mongoStatusMonitor } from "../mongodb.service";
 
 export enum MonitorType {
   HTTP = "http",
@@ -27,7 +28,7 @@ export const _startCreatedMonitors = (
     console.log("TCP", monitor.name, name);
   }
   if (type === MonitorType.MONGO) {
-    console.log("MONGO", monitor.name, name);
+    mongoStatusMonitor(monitor!, toLower(name));
   }
   if (type === MonitorType.REDIS) {
     console.log("REDIS", monitor.name, name);
