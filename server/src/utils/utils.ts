@@ -4,6 +4,9 @@ import { IAuthPayload } from "@app/interfaces/user.interface";
 import { verify } from "jsonwebtoken";
 import { JWT_TOKEN } from "@app/server/config";
 
+export const appTimeZone: string =
+  Intl.DateTimeFormat().resolvedOptions().timeZone;
+
 /**
  * Email validator
  * @returns {boolean}
