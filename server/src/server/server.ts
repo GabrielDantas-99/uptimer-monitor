@@ -33,7 +33,9 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import customFormat from "dayjs/plugin/customParseFormat";
-import { startMonitors } from "@app/utils/utils";
+import { enableAutoRefreshJob, startMonitors } from "@app/utils/utils";
+import { WebSocketServer, Server as WSServer } from "ws";
+import { useServer } from "graphql-ws/lib/use/ws";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -43,19 +45,40 @@ export default class MonitorServer {
   private app: Express;
   private httpServer: http.Server;
   private server: ApolloServer;
+  private wsServer: WSServer;
 
   constructor(app: Express) {
     this.app = app;
     this.httpServer = new http.Server(app);
+    this.wsServer = new WebSocketServer({
+      server: this.httpServer,
+      path: "/graphql",
+      perMessageDeflate: false,
+    });
     const schema = makeExecutableSchema({
       typeDefs: mergedGQLSchema,
       resolvers,
     });
+    const serverCleanup = useServer(
+      {
+        schema,
+      },
+      this.wsServer
+    );
     this.server = new ApolloServer<AppContext | BaseContext>({
       schema,
       introspection: NODE_ENV !== Envs.PROD,
       plugins: [
         ApolloServerPluginDrainHttpServer({ httpServer: this.httpServer }),
+        {
+          async serverWillStart() {
+            return {
+              async drainServer() {
+                await serverCleanup.dispose();
+              },
+            };
+          },
+        },
         NODE_ENV === Envs.PROD
           ? ApolloServerPluginLandingPageDisabled()
           : ApolloServerPluginLandingPageLocalDefault({ embed: true }),
@@ -70,6 +93,7 @@ export default class MonitorServer {
      */
     await this.server.start(); // Only if using expressMiddleWare (not startStandaloneServer)
     this.standartMiddleware(this.app);
+    this.webSocketConnection();
     this.startServer();
   }
 
@@ -111,6 +135,17 @@ export default class MonitorServer {
     app.get("/health", (_req: Request, res: Response) => {
       res.status(200).send("Uptimer monitor service is healthy and OK.");
     });
+  }
+
+  private webSocketConnection() {
+    this.wsServer.on(
+      "connection",
+      (_ws: WebSocket, req: http.IncomingMessage) => {
+        if (req.headers && req.headers.cookie) {
+          enableAutoRefreshJob(req.headers.cookie);
+        }
+      }
+    );
   }
 
   private async startServer(): Promise<void> {
