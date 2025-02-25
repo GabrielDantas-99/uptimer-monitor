@@ -21,7 +21,7 @@ import {
   authenticateGraphQLRoute,
   resumeMonitors,
 } from "@app/utils/utils";
-import { toLower } from "lodash";
+import { some, toLower } from "lodash";
 
 export const MonitorResolver = {
   Query: {
@@ -119,6 +119,20 @@ export const MonitorResolver = {
         userId,
         active as boolean
       );
+      const hasActiveMonitors: boolean = some(
+        results,
+        (monitor: IMonitorDocument) => monitor.active
+      );
+      /**
+       * Stop auto refresh if there are no active monitors for single user
+       */
+      if (!hasActiveMonitors) {
+        req.session = {
+          ...req.session,
+          enableAutomaticRefresh: false,
+        };
+        stopSingleBackgroundJob(`${toLower(req.currentUser?.username)}`);
+      }
       if (!active) {
         console.log("stopSingleBackgroundJob");
         stopSingleBackgroundJob(name, monitorId!);
