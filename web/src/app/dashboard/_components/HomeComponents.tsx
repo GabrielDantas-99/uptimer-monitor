@@ -1,17 +1,21 @@
+'use client'
+
 import {
   IMonitorDocument,
   IMonitorState,
   IPagination,
 } from "@/interfaces/monitor.interface";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import HomeButtonGroup from "./HomeButtonGroup";
 import Button from "@/app/_components/Button";
 import TextInput from "@/app/_components/TextInput";
 import clsx from "clsx";
-import { Play } from "lucide-react";
+import { Grid, Pause, Play } from "lucide-react";
 import SwitchView from "./SwitchView";
 import HomeGrid from "./HomeGrid";
 import HomeTable from "./HomeTable";
+import { setLocalStorageItem } from "@/utils/utils";
+import { filter, some, toLower } from "lodash";
 
 export const renderButtons = (
   monitors: IMonitorDocument[],
@@ -33,29 +37,48 @@ export const renderButtons = (
 export const renderRefreshButtons = (
   view: string,
   isRefreshed: boolean,
+  monitorsRef: IMonitorDocument[],
+  monitors: IMonitorDocument[],
+  setView: Dispatch<SetStateAction<string>>,
+  setMonitors: Dispatch<SetStateAction<IMonitorDocument[]>>,
+  refreshMonitors: () => void,
+  enableAutoRefresh: () => void,
 ): JSX.Element => {
+  const hasActiveMonitors: boolean = some(monitors, (monitor: IMonitorDocument) => monitor.active);
+  let refreshed = isRefreshed;
+  if (isRefreshed && !hasActiveMonitors) {
+    refreshed = false;
+    setLocalStorageItem('refresh', JSON.stringify(false));
+  }
+
   return (
-    <div className="h-44 flex flex-col items-start justify-start lg:flex-row lg:items-center lg:justify-between lg:h-20">
+    <div className=" flex flex-col items-start justify-start lg:flex-row lg:items-center lg:justify-between ">
       <Button
+        onClick={refreshMonitors}
         label="Refresh"
-        className={clsx(
-          "inline-flex items-center px-4 py-2 cursor-pointer text-base font-medium text-white mb-3 lg:mb-0",
-        )}
-        disabled={isRefreshed}
+        variant="success"
+        disabled={!refreshed}
       />
       <div className="flex flex-col justify-start gap-3 lg:flex-row lg:justify-end lg:w-full ">
-        <SwitchView />
+        <SwitchView view={view} setView={setView} />
         <Button
-          icon={<Play />}
-          label={
-            !isRefreshed ? "Enable Auto Refresh" : "Disable Auto Refresh"
-          }
+          label={!refreshed ? "Enable Auto Refresh" : "Disable Auto Refresh"}
+          onClick={enableAutoRefresh}
+          icon={!refreshed ? <Play /> : <Pause />}
         />
-        <div className="w-full lg:w-[30%]">
+        <div className="w-full lg:w-[30%]"
+          onChange={(event: FormEvent) => {
+            const value: string = (event.target as HTMLInputElement).value;
+            console.log(value)
+            const results: IMonitorDocument[] = filter(monitors, (monitor: IMonitorDocument) => {
+              return toLower(monitor.name).includes(toLower(value)) || toLower(monitor.type).includes(toLower(value))
+            });
+            setMonitors(!value || !results.length ? monitorsRef : results);
+          }}
+        >
           <TextInput
             type="text"
             name="search"
-            className="border border-black text-gray-900 text-sm  focus:ring-[#1e8dee] focus:border-[#1e8dee] block w-full p-2.5"
             placeholder="Search by name"
           />
         </div>
@@ -69,7 +92,7 @@ export const renderTableAndPagination = (
   limit: IPagination,
   autoRefreshLoading: boolean,
   monitors: IMonitorDocument[],
-  updateLimit?: (newLimit: IPagination) => void
+  updateLimit: (newLimit: IPagination) => void
 ): JSX.Element => {
   return (
     <>
