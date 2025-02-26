@@ -25,5 +25,5 @@ export const timeFromNow = (date: string) => {
   if (date === 'null') {
     return 'None';
   }
-  return dayjs(new Date(JSON.parse(date))).fromNow();
+  return dayjs(new Date(JSON.parse(date))).fromNow;
 };

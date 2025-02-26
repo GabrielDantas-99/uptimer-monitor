@@ -66,9 +66,11 @@ const HomeTable: FC<HomeTableProps> = ({
                 </TableCell>
                 <TableCell className="font-medium">{upperCase(monitor.type)}</TableCell>
                 <TableCell>{monitor.name}</TableCell>
-                <TableCell>
-                  {monitor.uptime}%
-                  <HealthBar size="small" heartBeats={monitor.heartbeats!} />
+                <TableCell >
+                  <div className="flex items-center gap-2">
+                    {monitor.uptime}%
+                    <HealthBar size="small" heartBeats={monitor.heartbeats!} />
+                  </div>
                 </TableCell>
                 <TableCell>{convertFrequency(monitor.frequency)}</TableCell>
                 <TableCell>

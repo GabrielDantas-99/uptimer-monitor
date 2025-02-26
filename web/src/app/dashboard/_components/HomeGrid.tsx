@@ -5,6 +5,7 @@ import { FC, ReactElement } from "react";
 import HomeTableBtnGroup from "./HomeTableBtnGroup";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Label } from "@radix-ui/react-label";
+import ResponseChart from "./ResponseChart";
 
 const DEFAULT_DURATION = 24;
 
@@ -42,16 +43,7 @@ const HomeGrid: FC<HomeTableProps> = ({ monitors, limit, autoRefreshLoading }): 
             <CardDescription>Deploy your new project in one-click.</CardDescription>
           </CardHeader>
           <CardContent>
-            <form>
-              <div className="grid w-full items-center gap-4">
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="name">Name</Label>
-                </div>
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="framework">Framework</Label>
-                </div>
-              </div>
-            </form>
+            <ResponseChart heartbeats={monitor.heartbeats!} />
           </CardContent>
           <CardFooter className="flex flex-col justify-between space-y-2 border-t border-border pt-4 mx-4 px-2">
             <Feature title="Status">
