@@ -3,6 +3,7 @@ import { getHttpHeartBeatsByDuration } from "./http.service";
 import { MonitorType } from "./monitor/startCreatedMonitors";
 import { HttpModel } from "@app/models/http.model";
 import { getMongoHeartBeatsByDuration } from "./mongodb.service";
+import { getRedisHeartBeatsByDuration } from "./redis.service";
 
 /**
  * Get monitor heartbeats
@@ -27,7 +28,7 @@ export const getHeartbeats = async (
     heartbeats = await getMongoHeartBeatsByDuration(monitorId, duration);
   }
   if (type === MonitorType.REDIS) {
-    console.log("REDIS");
+    heartbeats = await getRedisHeartBeatsByDuration(monitorId, duration);
   }
   return heartbeats;
 };

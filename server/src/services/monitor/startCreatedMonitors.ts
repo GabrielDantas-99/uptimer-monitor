@@ -2,6 +2,7 @@ import { IMonitorDocument } from "@app/interfaces/monitor.interface";
 import { httpStatusMonitor } from "../http.service";
 import { toLower } from "lodash";
 import { mongoStatusMonitor } from "../mongodb.service";
+import { redisStatusMonitor } from "../redis.service";
 
 export enum MonitorType {
   HTTP = "http",
@@ -31,6 +32,6 @@ export const _startCreatedMonitors = (
     mongoStatusMonitor(monitor!, toLower(name));
   }
   if (type === MonitorType.REDIS) {
-    console.log("REDIS", monitor.name, name);
+    redisStatusMonitor(monitor!, toLower(name));
   }
 };
