@@ -5,6 +5,10 @@ import { apolloClient } from "@/queries/apolloClient";
 import ApolloProvider from "@/queries/apolloProvider";
 import { Toaster } from "@/components/ui/toaster";
 import MonitorProvider from "@/context/MonitorProvider";
+import dayjs from "dayjs";
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(relativeTime)
 
 const font = Poppins({
   subsets: ["latin"],

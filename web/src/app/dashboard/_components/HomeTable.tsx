@@ -6,6 +6,8 @@ import { FC, ReactElement } from "react";
 import HomeTableBtnGroup from "./HomeTableBtnGroup";
 import { Table, TableCaption, TableHeader, TableRow, TableHead, TableBody, TableCell, TableFooter } from "@/components/ui/table";
 import Button from "@/app/_components/Button";
+import HealthBar from "@/app/_components/HealthBar";
+import { convertFrequency, timeFromNow } from "@/utils/utils";
 
 const DEFAULT_DURATION = 24;
 
@@ -64,11 +66,14 @@ const HomeTable: FC<HomeTableProps> = ({
                 </TableCell>
                 <TableCell className="font-medium">{upperCase(monitor.type)}</TableCell>
                 <TableCell>{monitor.name}</TableCell>
-                <TableCell>{monitor.uptime}%</TableCell>
-                <TableCell>{monitor.frequency}</TableCell>
+                <TableCell>
+                  {monitor.uptime}%
+                  <HealthBar size="small" heartBeats={monitor.heartbeats!} />
+                </TableCell>
+                <TableCell>{convertFrequency(monitor.frequency)}</TableCell>
                 <TableCell>
                   {monitor.lastChanged ? (
-                    <>{monitor.lastChanged}</>
+                    <>{timeFromNow(`${monitor.lastChanged}`)}</>
                   ) : (
                     "None"
                   )}
