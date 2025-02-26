@@ -1,10 +1,11 @@
-import Button from "@/app/_components/Button";
 import { HomeTableProps, IMonitorDocument } from "@/interfaces/monitor.interface";
 import clsx from "clsx";
 import { upperCase } from "lodash";
-import { ArrowDown, ArrowUp, Loader, Pause, PencilLine, Play, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, Loader, Play } from "lucide-react";
 import { FC, ReactElement } from "react";
 import HomeTableBtnGroup from "./HomeTableBtnGroup";
+import { Table, TableCaption, TableHeader, TableRow, TableHead, TableBody, TableCell, TableFooter } from "@/components/ui/table";
+import Button from "@/app/_components/Button";
 
 const DEFAULT_DURATION = 24;
 
@@ -17,7 +18,9 @@ const HomeTable: FC<HomeTableProps> = ({
   const navigateToStatusPage = (monitor: IMonitorDocument): void => {
     // 24 is the default duration
   };
-
+  const returnVariant = (monitor: IMonitorDocument): "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "success" | "warn" => {
+    return !monitor.active ? 'warn' : monitor.status === 1 ? 'destructive' : 'success'
+  }
   return (
     <div className="relative overflow-x-auto mt-10 lg:mt-0">
       {autoRefreshLoading ? (
@@ -31,55 +34,25 @@ const HomeTable: FC<HomeTableProps> = ({
       ) : (
         <></>
       )}
-      <table className="w-full text-sm text-left rtl:text-right text-gray-500">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-          <tr>
-            <th scope="col" className="px-6 py-3">
-              Status
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Type
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Name
-            </th>
-            <th scope="col" className="px-6 py-3 w-[15%]">
-              Uptime
-            </th>
-            <th scope="col" className="px-6 py-3 w-[15%]">
-              Frequency
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Last Modified
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {monitors
-            .slice(limit.start, limit.end)
+      <Table>
+        <TableCaption>A list of your recent invoices.</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Status</TableHead>
+            <TableHead>Type</TableHead>
+            <TableHead>Name</TableHead>
+            <TableHead>Uptime</TableHead>
+            <TableHead>Frequency</TableHead>
+            <TableHead>Last Modified</TableHead>
+            <TableHead>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {monitors.slice(limit.start, limit.end)
             .map((monitor: IMonitorDocument, index: number) => (
-              <tr
-                key={monitor.id}
-                className={`${index % 2 !== 0 ? "bg-white" : "bg-[#f8f8fa]"}`}
-              >
-                <th
-                  scope="row"
-                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-                >
-                  <button
-                    type="button"
-                    className={clsx(
-                      "mr-1 inline-flex items-center px-4 py-2 text-sm font-bold text-white rounded",
-                      {
-                        "bg-yellow-400": !monitor.active,
-                        "bg-green-400": monitor.active && monitor.status === 0,
-                        "bg-red-400": monitor.active && monitor.status === 1,
-                      }
-                    )}
-                  >
+              <TableRow key={monitor.monitorId}>
+                <TableCell className="font-medium">
+                  <Button variant={returnVariant(monitor)}>
                     {monitor.active ? (
                       <>
                         {monitor.status === 1 ? <ArrowDown /> : <ArrowUp />}
@@ -87,33 +60,32 @@ const HomeTable: FC<HomeTableProps> = ({
                     ) : (
                       <Play />
                     )}
-                  </button>
-                </th>
-                <td className="px-6 py-4">{upperCase(monitor.type)}</td>
-                <td
-                  onClick={() => navigateToStatusPage(monitor)}
-                  className="px-6 py-4 text-[#1e8dee] font-medium cursor-pointer max-w-[270px] whitespace-nowrap text-ellipsis truncate"
-                >
-                  {monitor.name}
-                </td>
-                <td className="px-6 py-5 flex gap-3">
-                  <div className="w-8">{monitor.uptime}%</div>
-                </td>
-                <td className="px-6 py-5">{monitor.frequency}</td>
-                <td className="px-6 py-4 max-w-[270px] whitespace-nowrap text-ellipsis truncate">
+                  </Button>
+                </TableCell>
+                <TableCell className="font-medium">{upperCase(monitor.type)}</TableCell>
+                <TableCell>{monitor.name}</TableCell>
+                <TableCell>{monitor.uptime}%</TableCell>
+                <TableCell>{monitor.frequency}</TableCell>
+                <TableCell>
                   {monitor.lastChanged ? (
                     <>{monitor.lastChanged}</>
                   ) : (
                     "None"
                   )}
-                </td>
-                <td className="px-6 py-4">
+                </TableCell>
+                <TableCell className="text-right">
                   <HomeTableBtnGroup monitor={monitor} />
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
-        </tbody>
-      </table>
+        </TableBody>
+        {/* <TableFooter>
+          <TableRow>
+            <TableCell colSpan={3}>Total</TableCell>
+            <TableCell className="text-right">$2,500.00</TableCell>
+          </TableRow>
+        </TableFooter> */}
+      </Table>
     </div>
   );
 };

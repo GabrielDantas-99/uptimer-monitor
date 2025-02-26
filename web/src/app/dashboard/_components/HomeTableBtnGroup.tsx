@@ -12,21 +12,21 @@ const HomeTableBtnGroup: FC<HomeTableBtnGroupProps> = ({
 }): ReactElement => {
 
   return (
-    <div className="inline-flex shadow-sm" role="group">
+    <div className="flex items-center gap-2" role="group">
       <Button
         icon={monitor.active ? <Pause /> : <Play />}
         type="button"
-        className="mr-1 inline-flex items-center px-4 py-2 text-sm font-bold text-[#1e8dee] rounded border border-[#1e8dee] hover:bg-[#1e8dee] hover:text-white"
+        variant={monitor.active ? 'secondary' : 'success'}
       />
       <Button
         icon={<PencilLine />}
         type="button"
-        className="mr-1 inline-flex items-center px-4 py-2 text-sm font-bold text-[#1e8dee] rounded border border-[#1e8dee] hover:bg-[#1e8dee] hover:text-white"
+        variant="warn"
       />
       <Button
         icon={<Trash />}
         type="button"
-        className="mr-1 inline-flex items-center px-4 py-2 text-sm font-bold text-white rounded bg-red-600 hover:bg-red-400 hover:text-white"
+        variant="destructive"
       />
     </div>
   );
