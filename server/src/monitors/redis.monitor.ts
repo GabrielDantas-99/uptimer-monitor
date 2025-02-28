@@ -29,7 +29,7 @@ class RedisMonitor {
       this.assertionCheck(response, monitorData);
     } catch (error) {
       const monitorData: IMonitorDocument = await getMonitorById(monitorId!);
-      console.log(monitorData, error);
+      this.redisError(monitorData, error);
     }
   }
 
@@ -79,6 +79,33 @@ class RedisMonitor {
         this.errorCount = 0;
         this.noSuccessAlert = true;
       }
+    }
+  }
+
+  async redisError(monitorData: IMonitorDocument, error: IMonitorResponse) {
+    this.errorCount += 1;
+    const timestamp = dayjs.utc().valueOf();
+    const heartbeatData: IHeartbeat = {
+      monitorId: monitorData.id!,
+      status: 1,
+      code: error.code,
+      message:
+        error && error.message ? error.message : "Redis heartbeat failed",
+      timestamp,
+      responseTime: error.responseTime,
+      connection: error.status,
+    };
+    await Promise.all([
+      updateMonitorStatus(monitorData, timestamp, "failure"),
+      createRedisHeartBeat(heartbeatData),
+    ]);
+    logger.info(`Redis heartbeat failed: Monitor ID ${monitorData.id}`);
+    if (
+      monitorData.alertThreshold > 0 &&
+      this.errorCount > monitorData.alertThreshold
+    ) {
+      this.errorCount = 0;
+      this.noSuccessAlert = false;
     }
   }
 }
