@@ -1,6 +1,7 @@
 import { IHeartbeat } from "@app/interfaces/heartbeat.interface";
 import { IMonitorDocument } from "@app/interfaces/monitor.interface";
 import { RedisModel } from "@app/models/redis.model";
+import { redisMonitor } from "@app/monitors/redis.monitor";
 import { startSingleJob } from "@app/utils/jobs";
 import { appTimeZone } from "@app/utils/utils";
 import dayjs from "dayjs";
@@ -53,6 +54,6 @@ export const redisStatusMonitor = (
     url: monitor.url,
   } as IMonitorDocument;
   startSingleJob(name, appTimeZone, monitor.frequency, async () =>
-    console.log(redisMonitorData)
+    redisMonitor.start(redisMonitorData)
   );
 };
