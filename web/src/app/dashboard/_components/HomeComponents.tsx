@@ -69,7 +69,6 @@ export const renderRefreshButtons = (
         <div className="w-full lg:w-[30%]"
           onChange={(event: FormEvent) => {
             const value: string = (event.target as HTMLInputElement).value;
-            console.log(value)
             const results: IMonitorDocument[] = filter(monitors, (monitor: IMonitorDocument) => {
               return toLower(monitor.name).includes(toLower(value)) || toLower(monitor.type).includes(toLower(value))
             });

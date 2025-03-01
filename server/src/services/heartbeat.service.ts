@@ -4,6 +4,10 @@ import { MonitorType } from "./monitor/startCreatedMonitors";
 import { HttpModel } from "@app/models/http.model";
 import { getMongoHeartBeatsByDuration } from "./mongodb.service";
 import { getRedisHeartBeatsByDuration } from "./redis.service";
+import { getTcpHeartBeatsByDuration } from "./tcp.service";
+import { MongoDBModel } from "@app/models/mongodb.model";
+import { TcpModel } from "@app/models/tcp.model";
+import { RedisModel } from "@app/models/redis.model";
 
 /**
  * Get monitor heartbeats
@@ -22,7 +26,7 @@ export const getHeartbeats = async (
     heartbeats = await getHttpHeartBeatsByDuration(monitorId, duration);
   }
   if (type === MonitorType.TCP) {
-    console.log("TCP");
+    heartbeats = await getTcpHeartBeatsByDuration(monitorId, duration);
   }
   if (type === MonitorType.MONGO) {
     heartbeats = await getMongoHeartBeatsByDuration(monitorId, duration);
@@ -40,6 +44,15 @@ export const deleteMonitorTypeHeartbeats = async (
   let model = null;
   if (type === MonitorType.HTTP) {
     model = HttpModel;
+  }
+  if (type === MonitorType.MONGO) {
+    model = MongoDBModel;
+  }
+  if (type === MonitorType.REDIS) {
+    model = RedisModel;
+  }
+  if (type === MonitorType.TCP) {
+    model = TcpModel;
   }
   if (model !== null) {
     await model.destroy({

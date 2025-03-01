@@ -143,7 +143,6 @@ export const MonitorResolver = {
         stopSingleBackgroundJob(`${toLower(req.currentUser?.username)}`);
       }
       if (!active) {
-        console.log("stopSingleBackgroundJob");
         stopSingleBackgroundJob(name, monitorId!);
       } else {
         resumeMonitors(monitorId!);
