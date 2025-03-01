@@ -1,3 +1,5 @@
+import { Socket } from "node:net";
+
 import { IMonitorResponse } from "@app/interfaces/monitor.interface";
 import { MongoClient } from "mongodb";
 import { createClient } from "redis";
@@ -97,6 +99,56 @@ export const redisPing = (
             code: 500,
           });
         });
+    });
+  });
+};
+
+export const tcpPing = async (
+  hostname: string,
+  port: number,
+  timeout: number
+): Promise<IMonitorResponse> => {
+  return new Promise((resolve, reject) => {
+    const socket: Socket = new Socket();
+    const startTime: number = Date.now();
+
+    const options = {
+      address: hostname || "127.0.0.1",
+      port: port || 80,
+      timeout: timeout || 1000,
+    };
+
+    socket.setTimeout(options.timeout, () => {
+      socket.destroy();
+      reject({
+        status: "refused",
+        responseTime: Date.now() - startTime,
+        message: "TCP socket timed out",
+        code: 500,
+      });
+    });
+
+    socket.connect(options.port, options.address, () => {
+      socket.destroy();
+      resolve({
+        status: "established",
+        responseTime: Date.now() - startTime,
+        message: "Host is up and running",
+        code: 200,
+      });
+    });
+
+    socket.on("error", (error: Error) => {
+      socket.destroy();
+      reject({
+        status: "refused",
+        responseTime: Date.now() - startTime,
+        message:
+          error && error.message.length > 0
+            ? error.message
+            : "TCP connection failed",
+        code: 500,
+      });
     });
   });
 };
