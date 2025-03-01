@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
-import { useRegister } from "../(pages)/create-account/useRegister"
+import { useRegister, useSocialRegister } from "../(pages)/create-account/useRegister"
 import TextInput from "@/app/_components/TextInput"
 import clsx from "clsx"
 import Image from "next/image"
@@ -28,7 +28,7 @@ export function RegisterForm({
   ...props
 }: RegisterFormProps) {
   const { loading, validationErrors, setValidationErrors, onRegisterSubmit } = useRegister();
-
+  const { loading: googleLoading, authWithGoogle } = useSocialRegister()
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
