@@ -2,23 +2,60 @@
 
 import { useState } from "react";
 import { renderButtons, renderRefreshButtons, renderTableAndPagination } from "./_components/HomeComponents";
+import { useDashboard } from "./hooks/useDashboard";
 
 const DashboardPage = () => {
-  const [monitorState, setMonitorState] = useState({
-    showModal: false,
-    enableRefresh: false,
-    autoRefreshLoading: false
-  })
+  const {
+    monitorState,
+    monitors,
+    limit,
+    isRefreshed,
+    autoMonitorsRef,
+    monitorsRef,
+    view,
+    loading,
+    openModal,
+    setView,
+    updateLimit,
+    setMonitors,
+    setMonitorState,
+    refreshMonitors,
+    enableAutoRefresh,
+    closeUptimeModal,
+  } = useDashboard()
   return (
     <div className="m-auto px-6 h-screen relative min-h-screen xl:container md:px-12 lg:px-6">
-      {renderButtons([], monitorState, setMonitorState)}
-      {renderRefreshButtons('box', true)}
-      {renderTableAndPagination(
-        'box',
-        { start: 0, end: 10 },
-        monitorState.autoRefreshLoading,
-        []
-      )}
+      <>
+        {!loading && monitors.length > 0 ? (
+          <>
+            {renderButtons(monitors, monitorState, setMonitorState)}
+            {renderRefreshButtons(
+              view,
+              isRefreshed!,
+              monitorsRef.current,
+              monitors,
+              setView,
+              setMonitors,
+              () => refreshMonitors(),
+              () => enableAutoRefresh()
+            )}
+            {renderTableAndPagination(
+              view,
+              limit,
+              monitorState.autoRefreshLoading,
+              monitors,
+              updateLimit
+            )}
+          </>
+        ) : (
+          <>
+            {!loading && !monitors.length && (
+              <>Create Uptime Teste</>
+            )}
+          </>
+        )}
+      </>
+
     </div>
   );
 }

@@ -171,7 +171,7 @@ export interface IUseUptime {
   onHandleSubmit: () => void;
 }
 
-export interface IUseHome {
+export interface IUseDashboard {
   monitorState: IMonitorState;
   monitors: IMonitorDocument[];
   limit: IPagination;

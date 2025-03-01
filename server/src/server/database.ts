@@ -14,6 +14,7 @@ export const sequelize: Sequelize = new Sequelize(POSTGRES_DB, {
 export async function databaseConnection(): Promise<void> {
   try {
     await sequelize.authenticate();
+    // { force: true}: only for development (delete data of the database)
     await sequelize.sync(); // Checks the models and if table already exists
     logger.info("Postgres database connection has been established successful");
   } catch (error) {

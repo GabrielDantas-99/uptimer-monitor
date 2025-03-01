@@ -3,7 +3,6 @@ import {
   IMonitorArgs,
   IMonitorDocument,
 } from "@app/interfaces/monitor.interface";
-import logger from "@app/server/logger";
 import {
   createMonitor,
   deleteSingleMonitor,
@@ -20,8 +19,14 @@ import {
   appTimeZone,
   authenticateGraphQLRoute,
   resumeMonitors,
+  uptimePercentage,
 } from "@app/utils/utils";
 import { some, toLower } from "lodash";
+import { PubSub } from "graphql-subscriptions";
+import { getHeartbeats } from "@app/services/heartbeat.service";
+import { IHeartbeat } from "@app/interfaces/heartbeat.interface";
+
+export const pubSub: PubSub = new PubSub();
 
 export const MonitorResolver = {
   Query: {
@@ -73,8 +78,12 @@ export const MonitorResolver = {
             const monitors: IMonitorDocument[] = await getUserActiveMonitors(
               parseInt(userId!)
             );
-            // TODO: Publish data to client
-            logger.info(monitors[0].name);
+            pubSub.publish("MONITORS_UPDATED", {
+              monitorsUpdated: {
+                userId: parseInt(userId, 10),
+                monitors,
+              },
+            });
           }
         );
       } else {
@@ -188,6 +197,23 @@ export const MonitorResolver = {
     },
     notifications: (monitor: IMonitorDocument) => {
       return getSingleNotificationGroup(monitor.notificationId!);
+    },
+    heartbeats: async (monitor: IMonitorDocument) => {
+      const heartbeats = await getHeartbeats(monitor.type, monitor.id!, 24);
+      return heartbeats.slice(0, 16);
+    },
+    uptime: async (monitor: IMonitorDocument): Promise<number> => {
+      const heartbeats: IHeartbeat[] = await getHeartbeats(
+        monitor.type,
+        monitor.id!,
+        24
+      );
+      return uptimePercentage(heartbeats);
+    },
+  },
+  Subscription: {
+    monitorsUpdated: {
+      subscribe: () => pubSub.asyncIterator(["MONITORS_UPDATED"]),
     },
   },
 };
