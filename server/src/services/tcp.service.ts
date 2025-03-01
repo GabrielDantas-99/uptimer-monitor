@@ -1,6 +1,7 @@
 import { IHeartbeat } from "@app/interfaces/heartbeat.interface";
 import { IMonitorDocument } from "@app/interfaces/monitor.interface";
 import { TcpModel } from "@app/models/tcp.model";
+import { tcpMonitor } from "@app/monitors/tcp.monitor";
 import { startSingleJob } from "@app/utils/jobs";
 import { appTimeZone } from "@app/utils/utils";
 import dayjs from "dayjs";
@@ -55,6 +56,6 @@ export const tcpStatusMonitor = (
     timeout: monitor.timeout,
   } as IMonitorDocument;
   startSingleJob(name, appTimeZone, monitor.frequency, async () =>
-    console.log(tcpMonitorData)
+    tcpMonitor.start(tcpMonitorData)
   );
 };
