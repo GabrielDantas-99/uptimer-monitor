@@ -17,13 +17,13 @@ import {
   signInWithPopup,
   UserCredential,
 } from 'firebase/auth';
-import firebaseApp from '../../firebase';
 import showErrorToast from '@/utils/toast';
 import {
+  RegisterType,
   LoginType,
   registerSchema,
-  RegisterType,
 } from '../../_validations/auth';
+import firebaseApp from '../../firebase';
 
 export const useRegister = (): IUserAuth => {
   const { dispatch } = useContext(MonitorContext);
@@ -71,7 +71,14 @@ export const useSocialRegister = (): IUserAuth => {
       auth,
       provider
     );
-    console.log(userCredential);
+    const nameList = userCredential.user.displayName!.split(' ')[0];
+    const data = {
+      username: nameList,
+      email: userCredential.user.email,
+      socialId: userCredential.user.uid,
+      type: 'google',
+    };
+    submitUserData(data as RegisterType, authSocialUser, dispatch, router);
   };
 
   return {
