@@ -3,6 +3,7 @@ import { httpStatusMonitor } from "../http.service";
 import { toLower } from "lodash";
 import { mongoStatusMonitor } from "../mongodb.service";
 import { redisStatusMonitor } from "../redis.service";
+import { tcpStatusMonitor } from "../tcp.service";
 
 export enum MonitorType {
   HTTP = "http",
@@ -26,7 +27,7 @@ export const _startCreatedMonitors = (
     httpStatusMonitor(monitor!, toLower(name));
   }
   if (type === MonitorType.TCP) {
-    console.log("TCP", monitor.name, name);
+    tcpStatusMonitor(monitor!, toLower(name));
   }
   if (type === MonitorType.MONGO) {
     mongoStatusMonitor(monitor!, toLower(name));
