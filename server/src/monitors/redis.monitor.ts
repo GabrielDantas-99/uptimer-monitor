@@ -11,20 +11,25 @@ import { IHeartbeat } from "@app/interfaces/heartbeat.interface";
 import { createRedisHeartBeat } from "@app/services/redis.service";
 import logger from "@app/server/logger";
 import { redisPing } from "./monitors";
+import { IEmailLocals } from "@app/interfaces/notification.interface";
+import { locals, emailSender } from "@app/utils/utils";
 
 class RedisMonitor {
   errorCount: number;
   noSuccessAlert: boolean;
+  emailsLocals: IEmailLocals;
 
   constructor() {
     this.errorCount = 0;
     this.noSuccessAlert = true;
+    this.emailsLocals = locals();
   }
 
   async start(data: IMonitorDocument) {
     const { monitorId, url } = data;
     try {
       const monitorData: IMonitorDocument = await getMonitorById(monitorId!);
+      this.emailsLocals.appName = monitorData.name;
       const response: IMonitorResponse = await redisPing(url!);
       this.assertionCheck(response, monitorData);
     } catch (error) {
@@ -68,6 +73,11 @@ class RedisMonitor {
       ) {
         this.errorCount = 0;
         this.noSuccessAlert = false;
+        emailSender(
+          monitorData.notifications!.emails,
+          "errorStatus",
+          this.emailsLocals
+        );
       }
     } else {
       await Promise.all([
@@ -78,6 +88,11 @@ class RedisMonitor {
       if (!this.noSuccessAlert) {
         this.errorCount = 0;
         this.noSuccessAlert = true;
+        emailSender(
+          monitorData.notifications!.emails,
+          "successStatus",
+          this.emailsLocals
+        );
       }
     }
   }
@@ -106,6 +121,11 @@ class RedisMonitor {
     ) {
       this.errorCount = 0;
       this.noSuccessAlert = false;
+      emailSender(
+        monitorData.notifications!.emails,
+        "errorStatus",
+        this.emailsLocals
+      );
     }
   }
 }

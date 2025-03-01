@@ -2,7 +2,7 @@ import { Request } from "express";
 import { GraphQLError } from "graphql";
 import { IAuthPayload } from "@app/interfaces/user.interface";
 import { verify } from "jsonwebtoken";
-import { JWT_TOKEN } from "@app/server/config";
+import { CLIENT_URL, JWT_TOKEN } from "@app/server/config";
 import { IMonitorDocument } from "@app/interfaces/monitor.interface";
 import {
   getAllUsersActiveMonitors,
@@ -15,6 +15,8 @@ import { pubSub } from "@app/graphql/resolvers/monitor.resolver";
 import { startSingleJob } from "./jobs";
 import logger from "@app/server/logger";
 import { IHeartbeat } from "@app/interfaces/heartbeat.interface";
+import { IEmailLocals } from "@app/interfaces/notification.interface";
+import { sendEmail } from "./email";
 
 export const appTimeZone: string =
   Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -143,6 +145,25 @@ export const uptimePercentage = (heartbeats: IHeartbeat[]): number => {
       ((totalHeartbeats - downtimeHeartbeats) / totalHeartbeats) * 100
     ) || 0
   );
+};
+
+export const emailSender = async (
+  notificationEmails: string,
+  template: string,
+  locals: IEmailLocals
+): Promise<void> => {
+  const emails = JSON.parse(notificationEmails);
+  for (const email of emails) {
+    await sendEmail(template, email, locals);
+  }
+};
+
+export const locals = (): IEmailLocals => {
+  return {
+    appLink: `${CLIENT_URL}`,
+    appIcon: "https://ibb.com/jD45fqX",
+    appName: "",
+  };
 };
 
 /**

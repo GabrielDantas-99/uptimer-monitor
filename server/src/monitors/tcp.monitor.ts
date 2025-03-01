@@ -12,20 +12,25 @@ import logger from "@app/server/logger";
 import { createTcpHeartBeat } from "@app/services/tcp.service";
 
 import { tcpPing } from "./monitors";
+import { IEmailLocals } from "@app/interfaces/notification.interface";
+import { locals, emailSender } from "@app/utils/utils";
 
 class TcpMonitor {
   errorCount: number;
   noSuccessAlert: boolean;
+  emailsLocals: IEmailLocals;
 
   constructor() {
     this.errorCount = 0;
     this.noSuccessAlert = true;
+    this.emailsLocals = locals();
   }
 
   async start(data: IMonitorDocument) {
     const { monitorId, url, port, timeout } = data;
     try {
       const monitorData: IMonitorDocument = await getMonitorById(monitorId!);
+      this.emailsLocals.appName = monitorData.name;
       const response: IMonitorResponse = await tcpPing(url!, port!, timeout!);
       this.assertionCheck(response, monitorData);
     } catch (error) {
@@ -70,7 +75,11 @@ class TcpMonitor {
       if (!this.noSuccessAlert) {
         this.errorCount = 0;
         this.noSuccessAlert = false;
-        // TODO: Send Email
+        emailSender(
+          monitorData.notifications!.emails,
+          "errorStatus",
+          this.emailsLocals
+        );
       }
     } else {
       await Promise.all([
@@ -81,7 +90,11 @@ class TcpMonitor {
       if (!this.noSuccessAlert) {
         this.errorCount = 0;
         this.noSuccessAlert = true;
-        // TODO: Send Email
+        emailSender(
+          monitorData.notifications!.emails,
+          "successStatus",
+          this.emailsLocals
+        );
       }
     }
   }
@@ -109,7 +122,11 @@ class TcpMonitor {
     ) {
       this.errorCount = 0;
       this.noSuccessAlert = false;
-      // TODO: Send Email
+      emailSender(
+        monitorData.notifications!.emails,
+        "errorStatus",
+        this.emailsLocals
+      );
     }
   }
 }
