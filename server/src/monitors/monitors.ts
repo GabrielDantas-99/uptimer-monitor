@@ -1,4 +1,4 @@
-import { Socket } from "node:net";
+import { Socket } from "net";
 
 import { IMonitorResponse } from "@app/interfaces/monitor.interface";
 import { MongoClient } from "mongodb";
@@ -113,7 +113,7 @@ export const tcpPing = async (
     const startTime: number = Date.now();
 
     const options = {
-      address: hostname || "127.0.0.1",
+      address: hostname || "192.168.0.1",
       port: port || 80,
       timeout: timeout || 1000,
     };
