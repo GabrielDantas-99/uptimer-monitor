@@ -28,6 +28,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.11",
+    "firebase": "^10.12.3",
     "graphql": "^16.9.0",
     "graphql-ws": "^5.16.0",
     "lodash": "^4.17.21",
