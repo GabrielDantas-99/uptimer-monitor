@@ -67,10 +67,7 @@ class TcpMonitor {
       logger.info(
         `TCP heartbeat failed assertions: Monitor ID ${monitorData.id}`
       );
-      if (
-        monitorData.alertThreshold > 0 &&
-        this.errorCount > monitorData.alertThreshold
-      ) {
+      if (!this.noSuccessAlert) {
         this.errorCount = 0;
         this.noSuccessAlert = false;
         // TODO: Send Email
