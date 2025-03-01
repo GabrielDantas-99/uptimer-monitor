@@ -28,7 +28,7 @@ const HomeGrid: FC<HomeTableProps> = ({ monitors, limit, autoRefreshLoading }): 
   }
 
   return (
-    <div className="grid gap-6 pt-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="grid gap-6 pt-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
       {autoRefreshLoading ? (
         <div className="bg-white/[0.8] flex justify-center items-center z-50 left-0 top-0 absolute h-full w-full">
           <Loader className="animate-spin h-10 w-10 mr-3" size={40} color="#50b5ff" />
@@ -37,7 +37,7 @@ const HomeGrid: FC<HomeTableProps> = ({ monitors, limit, autoRefreshLoading }): 
         <></>
       )}
       {monitors.slice(limit.start, limit.end).map((monitor: IMonitorDocument, index: number) => (
-        <Card key={index} className="w-[350px]">
+        <Card key={index}>
           <CardHeader>
             <CardTitle>{monitor.name}</CardTitle>
             <CardDescription>Deploy your new project in one-click.</CardDescription>
