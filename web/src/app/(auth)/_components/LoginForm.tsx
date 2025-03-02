@@ -31,71 +31,69 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
+          <div className="flex flex-col gap-4">
+            <Button disabled={loading} variant="outline" className="w-full">
+              <Image src={'./apple.svg'} alt="Apple icon" width={16} height={16} />
+              Login with Apple
+            </Button>
+            <Button disabled={loading} variant="outline" className="w-full">
+              <Image src={'./google.svg'} alt="Google icon" width={16} height={16} />
+              Login with Google
+            </Button>
+          </div>
+          <div className="my-6 relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+            <span className="relative z-10 bg-background px-2 text-muted-foreground">
+              Or continue with
+            </span>
+          </div>
           <form action={onLoginSubmit}>
-            <div className="grid gap-6">
-              <div className="flex flex-col gap-4">
-                <Button variant="outline" className="w-full">
-                  <Image src={'./apple.svg'} alt="Apple icon" width={16} height={16} />
-                  Login with Apple
-                </Button>
-                <Button variant="outline" className="w-full">
-                  <Image src={'./google.svg'} alt="Google icon" width={16} height={16} />
-                  Login with Google
-                </Button>
+            <div className="grid gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  id="username"
+                  name="username"
+                  type="text"
+                  placeholder="m@example.com"
+                  className={clsx({
+                    'border border-red-400': validationErrors!.username
+                  })}
+                  onChange={() => {
+                    setValidationErrors!({ ...validationErrors!, username: '' })
+                  }}
+                />
               </div>
-              <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-                <span className="relative z-10 bg-background px-2 text-muted-foreground">
-                  Or continue with
-                </span>
-              </div>
-              <div className="grid gap-6">
-                <div className="grid gap-2">
-                  <Label htmlFor="username">Username</Label>
-                  <Input
-                    id="username"
-                    name="username"
-                    type="text"
-                    placeholder="m@example.com"
-                    className={clsx({
-                      'border border-red-400': validationErrors!.username
-                    })}
-                    onChange={() => {
-                      setValidationErrors!({ ...validationErrors!, username: '' })
-                    }}
-                  />
+              <div className="grid gap-2">
+                <div className="flex items-center">
+                  <Label htmlFor="password">Password</Label>
+                  <Link
+                    href="#"
+                    className="ml-auto text-sm underline-offset-4 hover:underline"
+                  >
+                    Forgot your password?
+                  </Link>
                 </div>
-                <div className="grid gap-2">
-                  <div className="flex items-center">
-                    <Label htmlFor="password">Password</Label>
-                    <a
-                      href="#"
-                      className="ml-auto text-sm underline-offset-4 hover:underline"
-                    >
-                      Forgot your password?
-                    </a>
-                  </div>
-                  <Input
-                    id="password"
-                    type="password"
-                    name="password"
-                    className={clsx({
-                      'border border-red-400': validationErrors!.password
-                    })}
-                    onChange={() => {
-                      setValidationErrors!({ ...validationErrors!, password: '' })
-                    }}
-                  />
-                </div>
-                <Button disabled={loading} type="submit" className="w-full">
-                  Login
-                </Button>
+                <Input
+                  id="password"
+                  type="password"
+                  name="password"
+                  className={clsx({
+                    'border border-red-400': validationErrors!.password
+                  })}
+                  onChange={() => {
+                    setValidationErrors!({ ...validationErrors!, password: '' })
+                  }}
+                />
               </div>
-              <div className="text-center text-sm">
-                Don&apos;t have an account?{" "}
-                <Link href="/create-account" className="underline underline-offset-4">
-                  Sign up
-                </Link>
-              </div>
+              <Button disabled={loading} type="submit" className="w-full">
+                Login
+              </Button>
+            </div>
+            <div className="text-center text-sm mt-4">
+              Don&apos;t have an account?{" "}
+              <Link href="/create-account" className="underline underline-offset-4">
+                Sign up
+              </Link>
             </div>
           </form>
         </CardContent>

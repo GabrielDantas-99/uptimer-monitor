@@ -73,31 +73,13 @@ export async function getUserByProp(
     const user: IUserDocument | undefined = (await UserModel.findOne({
       raw: true,
       where: {
-        [Op.or]: [
-          {
-            ...(type === "username" && {
-              username: upperFirst(prop),
-            }),
-            ...(type === "email" && {
-              email: toLower(prop),
-            }),
-          },
-        ],
+        ...(type === "username" && {
+          username: upperFirst(prop),
+        }),
+        ...(type === "email" && {
+          email: toLower(prop),
+        }),
       },
-    })) as unknown as IUserDocument | undefined;
-    return user;
-  } catch (error) {
-    throw new Error(error);
-  }
-}
-
-export async function getUserByEmail(
-  email: string
-): Promise<IUserDocument | undefined> {
-  try {
-    const user: IUserDocument | undefined = (await UserModel.findOne({
-      raw: true,
-      where: { email: toLower(email) },
     })) as unknown as IUserDocument | undefined;
     return user;
   } catch (error) {
