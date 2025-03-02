@@ -1,6 +1,5 @@
 import { INotificationDocument } from "@app/interfaces/notification.interface";
 import { IUserDocument, IUserResponse } from "@app/interfaces/user.interface";
-import { JWT_TOKEN } from "@app/server/config";
 import {
   createNotificationGroup,
   getAllNotificationGroups,
@@ -11,13 +10,14 @@ import {
   getUserBySocialId,
   getUserByUsernameOrEmail,
 } from "@app/services/user.service";
-import { GraphQLError } from "graphql";
-import { sign } from "jsonwebtoken";
-import { toLower, upperFirst } from "lodash";
 import { Request } from "express";
+import { GraphQLError } from "graphql";
+import { toLower, upperFirst } from "lodash";
+import { sign } from "jsonwebtoken";
+import { JWT_TOKEN } from "@app/server/config";
 import { authenticateGraphQLRoute, isEmail } from "@app/utils/utils";
 import { UserModel } from "@app/models/user.model";
-import { UserLoginRules } from "@app/validations";
+import { UserLoginRules, UserRegisterationRules } from "@app/validations";
 import { AppContext } from "@app/interfaces/monitor.interface";
 
 export const UserResolver = {
@@ -29,9 +29,7 @@ export const UserResolver = {
     ) {
       const { req } = contextValue;
       authenticateGraphQLRoute(req);
-      const notifications = await getAllNotificationGroups(
-        req.currentUser!.id!
-      );
+      const notifications = await getAllNotificationGroups(req.currentUser!.id);
       return {
         user: {
           id: req.currentUser?.id,
@@ -55,9 +53,8 @@ export const UserResolver = {
         { username, password },
         { abortEarly: false }
       );
-      // TODO: validate
       const isValidEmail = isEmail(username);
-      const type = !isValidEmail ? "username" : "email";
+      const type: string = !isValidEmail ? "username" : "email";
       const existingUser: IUserDocument | undefined = await getUserByProp(
         username,
         type
@@ -65,11 +62,11 @@ export const UserResolver = {
       if (!existingUser) {
         throw new GraphQLError("Invalid credentials");
       }
-      const passwordMatch: boolean = await UserModel.prototype.comparePassword(
+      const passwordsMatch: boolean = await UserModel.prototype.comparePassword(
         password,
         existingUser.password!
       );
-      if (!passwordMatch) {
+      if (!passwordsMatch) {
         throw new GraphQLError("Invalid credentials");
       }
       const response: IUserResponse = await userReturnValue(
@@ -86,13 +83,12 @@ export const UserResolver = {
     ) {
       const { req } = contextValue;
       const { user } = args;
-      await UserLoginRules.validate(user, { abortEarly: false });
+      await UserRegisterationRules.validate(user, { abortEarly: false });
       const { username, email, password } = user;
-      // TODO: Add data validation
       const checkIfUserExist: IUserDocument | undefined =
         await getUserByUsernameOrEmail(username!, email!);
       if (checkIfUserExist) {
-        throw new GraphQLError("Invalid credentials. Email or username.");
+        throw new GraphQLError("Invalid crendentials. Email or username.");
       }
       const authData: IUserDocument = {
         username: upperFirst(username),
@@ -113,9 +109,9 @@ export const UserResolver = {
       contextValue: AppContext
     ) {
       const { req } = contextValue;
-      await UserLoginRules.validate(args.user, { abortEarly: false });
-      const { username, email, socialId, type } = args.user;
-      // TODO: Add data validation
+      const { user } = args;
+      await UserRegisterationRules.validate(user, { abortEarly: false });
+      const { username, email, socialId, type } = user;
       const checkIfUserExist: IUserDocument | undefined =
         await getUserBySocialId(socialId!, email!, type!);
       if (checkIfUserExist) {
@@ -129,8 +125,12 @@ export const UserResolver = {
         const authData: IUserDocument = {
           username: upperFirst(username),
           email: toLower(email),
-          ...(type === "facebook" && { facebookId: socialId }),
-          ...(type === "google" && { facebookId: socialId }),
+          ...(type === "facebook" && {
+            facebookId: socialId,
+          }),
+          ...(type === "google" && {
+            googleId: socialId,
+          }),
         } as IUserDocument;
         const result: IUserDocument | undefined = await createNewUser(authData);
         const response: IUserResponse = await userReturnValue(
@@ -149,8 +149,7 @@ export const UserResolver = {
     },
   },
   User: {
-    createdAt: (user: IUserDocument) =>
-      new Date(`${user.createdAt}`).toISOString(),
+    createdAt: (user: IUserDocument) => new Date(user.createdAt!).toISOString(),
   },
 };
 
