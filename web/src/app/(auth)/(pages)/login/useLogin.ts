@@ -1,17 +1,25 @@
 import { IUserAuth } from '@/interfaces/user.interface';
 import { Dispatch, useContext, useState } from 'react';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import {
   FetchResult,
   MutationFunctionOptions,
   useMutation,
 } from '@apollo/client';
-import { LOGIN_USER } from '@/queries/auth';
+import { AUTH_SOCIAL_USER, LOGIN_USER } from '@/queries/auth';
 import { useRouter } from 'next/navigation';
-
 import { DispatchProps, MonitorContext } from '@/context/MonitorContext';
+import {
+  Auth,
+  FacebookAuthProvider,
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  UserCredential,
+} from 'firebase/auth';
 import showErrorToast from '@/utils/toast';
-import { loginSchema, LoginType } from '../../_validations/auth';
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import { LoginType, loginSchema, RegisterType } from '../../_validations/auth';
+import firebaseApp from '../../firebase';
 
 export const useLogin = (): IUserAuth => {
   const { dispatch } = useContext(MonitorContext);
@@ -34,8 +42,8 @@ export const useLogin = (): IUserAuth => {
         resultSchema.data,
         loginUser,
         dispatch,
-        'email/password',
-        router
+        router,
+        'email/password'
       );
     }
   };
@@ -48,27 +56,88 @@ export const useLogin = (): IUserAuth => {
   };
 };
 
+export const useSocialLogin = (): IUserAuth => {
+  const { dispatch } = useContext(MonitorContext);
+  const router: AppRouterInstance = useRouter();
+  const [authSocialUser, { loading }] = useMutation(AUTH_SOCIAL_USER);
+
+  const loginWithGoogle = async (): Promise<void> => {
+    const provider = new GoogleAuthProvider();
+    const auth: Auth = getAuth(firebaseApp);
+    auth.useDeviceLanguage();
+    const userCredential: UserCredential = await signInWithPopup(
+      auth,
+      provider
+    );
+    const nameList = userCredential.user.displayName!.split(' ');
+    const data = {
+      username: nameList[0],
+      email: userCredential.user.email,
+      socialId: userCredential.user.uid,
+      type: 'google',
+    };
+    submitUserData(
+      data as RegisterType,
+      authSocialUser,
+      dispatch,
+      router,
+      'social'
+    );
+  };
+
+  const loginWithFacebook = async (): Promise<void> => {
+    const provider = new FacebookAuthProvider();
+    const auth: Auth = getAuth(firebaseApp);
+    auth.useDeviceLanguage();
+    const userCredential: UserCredential = await signInWithPopup(
+      auth,
+      provider
+    );
+    const nameList = userCredential.user.displayName!.split(' ');
+    const data = {
+      username: nameList[0],
+      email: userCredential.user.email,
+      socialId: userCredential.user.uid,
+      type: 'facebook',
+    };
+    submitUserData(
+      data as RegisterType,
+      authSocialUser,
+      dispatch,
+      router,
+      'social'
+    );
+  };
+
+  return {
+    loading,
+    authWithGoogle: loginWithGoogle,
+    authWithFacebook: loginWithFacebook,
+  };
+};
+
 async function submitUserData(
   data: LoginType,
   loginUserMethod: (
     options?: MutationFunctionOptions | undefined
   ) => Promise<FetchResult>,
   dispatch: Dispatch<DispatchProps>,
-  authType: string,
-  router: AppRouterInstance
+  router: AppRouterInstance,
+  authType: string
 ) {
   try {
     const variables = authType === 'social' ? { user: data } : data;
-    const result: FetchResult = await loginUserMethod({
-      variables,
-    });
+    const result: FetchResult = await loginUserMethod({ variables });
     if (result && result.data) {
-      const { loginUser } = result.data;
+      const { loginUser, authSocialUser } = result.data;
       dispatch({
         type: 'dataUpdate',
         payload: {
-          user: loginUser.user,
-          notifications: loginUser.notifications,
+          user: authType === 'social' ? authSocialUser.user : loginUser.user,
+          notifications:
+            authType === 'social'
+              ? authSocialUser.notifications
+              : loginUser.notifications,
         },
       });
       router.push('/dashboard');

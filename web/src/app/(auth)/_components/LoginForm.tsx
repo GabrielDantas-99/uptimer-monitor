@@ -1,7 +1,6 @@
 'use client'
 
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -13,14 +12,18 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import Image from "next/image"
-import { useLogin } from "../(pages)/login/useLogin"
+import { useLogin, useSocialLogin } from "../(pages)/login/useLogin"
 import clsx from "clsx"
+import PageLoader from "./PageLoader"
+import Button from "@/app/_components/Button"
+import { Facebook } from "lucide-react"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const { loading, validationErrors, setValidationErrors, onLoginSubmit } = useLogin();
+  const { loading: socialAuthLoading, authWithGoogle, authWithFacebook } = useSocialLogin();
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -32,11 +35,11 @@ export function LoginForm({
         </CardHeader>
         <CardContent>
           <div className="flex flex-col gap-4">
-            <Button disabled={loading} variant="outline" className="w-full">
-              <Image src={'./apple.svg'} alt="Apple icon" width={16} height={16} />
-              Login with Apple
+            <Button onClick={authWithFacebook} disabled={loading} variant="outline" className="w-full">
+              <Facebook />
+              Login with Facebook
             </Button>
-            <Button disabled={loading} variant="outline" className="w-full">
+            <Button onClick={authWithGoogle} disabled={loading} variant="outline" className="w-full">
               <Image src={'./google.svg'} alt="Google icon" width={16} height={16} />
               Login with Google
             </Button>
@@ -46,6 +49,7 @@ export function LoginForm({
               Or continue with
             </span>
           </div>
+          {socialAuthLoading && <PageLoader />}
           <form action={onLoginSubmit}>
             <div className="grid gap-4">
               <div className="grid gap-2">
@@ -85,9 +89,7 @@ export function LoginForm({
                   }}
                 />
               </div>
-              <Button disabled={loading} type="submit" className="w-full">
-                Login
-              </Button>
+              <Button label={`${loading ? 'LOGIN IN PROGRESS...' : 'LOGIN'}`} disabled={loading} type="submit" className="w-full" />
             </div>
             <div className="text-center text-sm mt-4">
               Don&apos;t have an account?{" "}
