@@ -16,7 +16,7 @@ import TextInput from "@/app/_components/TextInput"
 import clsx from "clsx"
 import Image from "next/image"
 import PageLoader from "./PageLoader"
-import { Loader } from "lucide-react"
+import { Facebook, Loader } from "lucide-react"
 
 interface RegisterFormProps {
   className?: string;
@@ -28,9 +28,10 @@ export function RegisterForm({
   ...props
 }: RegisterFormProps) {
   const { loading, validationErrors, setValidationErrors, onRegisterSubmit } = useRegister();
-  const { loading: googleLoading, authWithGoogle } = useSocialRegister()
+  const { loading: socialAuthLoading, authWithGoogle, authWithFacebook } = useSocialRegister();
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
+      {socialAuthLoading && <PageLoader />}
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Welcome to Uptimer!</CardTitle>
@@ -42,9 +43,9 @@ export function RegisterForm({
           {loading && <PageLoader />}
           {/* TODO: Update to Shadcn Form */}
           <div className="flex flex-col gap-4">
-            <Button variant="outline" className="w-full">
-              <Image src={'./apple.svg'} alt="Apple icon" width={16} height={16} />
-              Register with Apple
+            <Button onClick={authWithFacebook} variant="outline" className="w-full">
+              <Facebook />
+              Register with Facebook
             </Button>
             <Button onClick={authWithGoogle} variant="outline" className="w-full">
               <Image src={'./google.svg'} alt="Google icon" width={16} height={16} />
@@ -104,8 +105,8 @@ export function RegisterForm({
                   }}
                 />
               </div>
-              <Button disabled={googleLoading} type="submit" className="w-full">
-                {googleLoading ? (
+              <Button disabled={socialAuthLoading} type="submit" className="w-full">
+                {socialAuthLoading ? (
                   <Loader className="animate-spin " />
                 ) : 'Register'}
               </Button>

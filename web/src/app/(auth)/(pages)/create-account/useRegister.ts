@@ -66,14 +66,15 @@ export const useSocialRegister = (): IUserAuth => {
   const registerWithGoogle = async (): Promise<void> => {
     const provider = new GoogleAuthProvider();
     const auth: Auth = getAuth(firebaseApp);
+    console.log(auth);
     auth.useDeviceLanguage();
     const userCredential: UserCredential = await signInWithPopup(
       auth,
       provider
     );
-    const nameList = userCredential.user.displayName!.split(' ')[0];
+    const nameList = userCredential.user.displayName!.split(' ');
     const data = {
-      username: nameList,
+      username: nameList[0],
       email: userCredential.user.email,
       socialId: userCredential.user.uid,
       type: 'google',
@@ -81,9 +82,28 @@ export const useSocialRegister = (): IUserAuth => {
     submitUserData(data as RegisterType, authSocialUser, dispatch, router);
   };
 
+  const registerWithFacebook = async (): Promise<void> => {
+    const provider = new FacebookAuthProvider();
+    const auth: Auth = getAuth(firebaseApp);
+    auth.useDeviceLanguage();
+    const userCredential: UserCredential = await signInWithPopup(
+      auth,
+      provider
+    );
+    const nameList = userCredential.user.displayName!.split(' ');
+    const data = {
+      username: nameList[0],
+      email: userCredential.user.email,
+      socialId: userCredential.user.uid,
+      type: 'facebook',
+    };
+    submitUserData(data as RegisterType, authSocialUser, dispatch, router);
+  };
+
   return {
     loading,
     authWithGoogle: registerWithGoogle,
+    authWithFacebook: registerWithFacebook,
   };
 };
 
