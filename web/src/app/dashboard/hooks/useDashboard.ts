@@ -44,7 +44,33 @@ export const useDashboard = (): IUseDashboard => {
     }
   );
 
-  useSubscription(MONITORS_UPDATED, {});
+  useSubscription(MONITORS_UPDATED, {
+    onData: ({ client, data }) => {
+      const { userId, monitors } = data.data.monitorsUpdated;
+      if (userId === user?.id) {
+        setMonitorState((prevState: IMonitorState) => ({
+          ...prevState,
+          autoRefreshLoading: true,
+        }));
+        autoMonitorsRef.current = monitors;
+        // TODO: Remove console
+        console.log(monitors);
+        client.cache.updateQuery({ query: GET_USER_MONITORS }, () => {
+          return {
+            getUserMonitors: {
+              __typename: 'MonitorResponse',
+              monitors,
+            },
+          };
+        });
+      } else {
+        setMonitorState((prevState: IMonitorState) => ({
+          ...prevState,
+          autoRefreshLoading: false,
+        }));
+      }
+    },
+  });
 
   const storageViewItem: string = getLocalStorageItem('view');
   const isRefreshed: boolean = JSON.parse(getLocalStorageItem('refresh'));
