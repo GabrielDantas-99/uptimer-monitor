@@ -7,7 +7,7 @@ import HomeTableBtnGroup from "./HomeTableBtnGroup";
 import { Table, TableCaption, TableHeader, TableRow, TableHead, TableBody, TableCell, TableFooter } from "@/components/ui/table";
 import Button from "@/app/_components/Button";
 import HealthBar from "@/app/_components/HealthBar";
-import { convertFrequency, timeFromNow } from "@/utils/utils";
+import { convertFrequency, timeFromNow } from "@/utils/date";
 
 const DEFAULT_DURATION = 24;
 
@@ -24,7 +24,7 @@ const HomeTable: FC<HomeTableProps> = ({
     return !monitor.active ? 'warn' : monitor.status === 1 ? 'destructive' : 'success'
   }
   return (
-    <div className="relative overflow-x-auto mt-10 lg:mt-0">
+    <>
       {autoRefreshLoading ? (
         <div className="bg-white/[0.8] flex justify-center items-center z-50 left-0 top-0 absolute h-full w-full">
           <Loader
@@ -52,7 +52,7 @@ const HomeTable: FC<HomeTableProps> = ({
         <TableBody>
           {monitors.slice(limit.start, limit.end)
             .map((monitor: IMonitorDocument, index: number) => (
-              <TableRow key={monitor.monitorId}>
+              <TableRow key={index}>
                 <TableCell className="font-medium">
                   <Button variant={returnVariant(monitor)}>
                     {monitor.active ? (
@@ -74,11 +74,7 @@ const HomeTable: FC<HomeTableProps> = ({
                 </TableCell>
                 <TableCell>{convertFrequency(monitor.frequency)}</TableCell>
                 <TableCell>
-                  {monitor.lastChanged ? (
-                    <>{timeFromNow(`${monitor.lastChanged}`)}</>
-                  ) : (
-                    "None"
-                  )}
+                  <>{timeFromNow(`${monitor.lastChanged}`)}</>
                 </TableCell>
                 <TableCell className="text-right">
                   <HomeTableBtnGroup monitor={monitor} />
@@ -93,7 +89,7 @@ const HomeTable: FC<HomeTableProps> = ({
           </TableRow>
         </TableFooter> */}
       </Table>
-    </div>
+    </>
   );
 };
 

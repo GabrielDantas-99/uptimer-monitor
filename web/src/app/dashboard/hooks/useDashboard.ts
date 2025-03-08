@@ -5,10 +5,14 @@ import {
   IPagination,
   IUseDashboard,
 } from '@/interfaces/monitor.interface';
-import { ENABLE_AUTO_REFRESH, GET_USER_MONITORS } from '@/queries/status';
+import {
+  ENABLE_AUTO_REFRESH,
+  GET_USER_MONITORS,
+  MONITORS_UPDATED,
+} from '@/queries/status';
 import showErrorToast from '@/utils/toast';
 import { getLocalStorageItem, setLocalStorageItem } from '@/utils/utils';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery, useQuery, useSubscription } from '@apollo/client';
 import { some } from 'lodash';
 import { useContext, useEffect, useRef, useState } from 'react';
 
@@ -39,6 +43,34 @@ export const useDashboard = (): IUseDashboard => {
       fetchPolicy: 'network-only',
     }
   );
+
+  useSubscription(MONITORS_UPDATED, {
+    onData: ({ client, data }) => {
+      const { userId, monitors } = data.data.monitorsUpdated;
+      if (userId === user?.id) {
+        setMonitorState((prevState: IMonitorState) => ({
+          ...prevState,
+          autoRefreshLoading: true,
+        }));
+        autoMonitorsRef.current = monitors;
+        // TODO: Remove console
+        console.log(monitors);
+        client.cache.updateQuery({ query: GET_USER_MONITORS }, () => {
+          return {
+            getUserMonitors: {
+              __typename: 'MonitorResponse',
+              monitors,
+            },
+          };
+        });
+      } else {
+        setMonitorState((prevState: IMonitorState) => ({
+          ...prevState,
+          autoRefreshLoading: false,
+        }));
+      }
+    },
+  });
 
   const storageViewItem: string = getLocalStorageItem('view');
   const isRefreshed: boolean = JSON.parse(getLocalStorageItem('refresh'));

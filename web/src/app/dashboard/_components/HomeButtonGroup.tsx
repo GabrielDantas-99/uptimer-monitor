@@ -22,9 +22,9 @@ const HomeButtonGroup = ({ monitors }: IHomeButtonGroupProps) => {
     return sum;
   }
   return (
-    <div className="inline-flex gap-2" role="group">
+    <div className="grid grid-cols-3 col-span-3 gap-2">
       <Button
-        className="font-medium"
+        className="font-medium "
         variant="success"
         label={count('active')}
         icon={<ArrowUp />}
