@@ -24,7 +24,7 @@ const HomeTable: FC<HomeTableProps> = ({
     return !monitor.active ? 'warn' : monitor.status === 1 ? 'destructive' : 'success'
   }
   return (
-    <div className="relative overflow-x-auto mt-10 lg:mt-0">
+    <>
       {autoRefreshLoading ? (
         <div className="bg-white/[0.8] flex justify-center items-center z-50 left-0 top-0 absolute h-full w-full">
           <Loader
@@ -89,7 +89,7 @@ const HomeTable: FC<HomeTableProps> = ({
           </TableRow>
         </TableFooter> */}
       </Table>
-    </div>
+    </>
   );
 };
 

@@ -27,7 +27,7 @@ const DashboardPage = () => {
     <div className="m-auto px-6 h-screen relative min-h-screen xl:container md:px-12 lg:px-6">
       <>
         {!loading && monitors.length > 0 ? (
-          <>
+          <div className="flex flex-col space-y-4">
             {renderButtons(monitors, monitorState, setMonitorState)}
             {renderRefreshButtons(
               view,
@@ -46,7 +46,7 @@ const DashboardPage = () => {
               monitors,
               updateLimit
             )}
-          </>
+          </div>
         ) : (
           <>
             {!loading && !monitors.length && (
