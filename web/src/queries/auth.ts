@@ -33,6 +33,15 @@ export const LOGIN_USER = gql`
   ${authDataFragment}
 `;
 
+export const AUTH_SOCIAL_USER = gql`
+  mutation AuthSocialUser($user: Auth!) {
+    authSocialUser(user: $user) {
+      ...AuthData
+    }
+  }
+  ${authDataFragment}
+`;
+
 export const CHECK_CURRENT_USER = gql`
   query CheckCurrentUser {
     checkCurrentUser {

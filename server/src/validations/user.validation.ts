@@ -20,7 +20,7 @@ const username = string()
   .required("Username is required.")
   .min(4, "Username should have at least 4 characters.")
   .max(20, "Username should have at most 20 characters.")
-  .matches(/^\w+$/, "Should be alphanumeric.")
+  .matches(/^\w+$/, "Must be alphanumeric and must not contain spaces.")
   .optional();
 
 const email = string()

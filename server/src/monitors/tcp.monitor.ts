@@ -8,13 +8,14 @@ import {
 } from "@app/services/monitor.service";
 import dayjs from "dayjs";
 import { IHeartbeat } from "@app/interfaces/heartbeat.interface";
-import { createRedisHeartBeat } from "@app/services/redis.service";
 import logger from "@app/server/logger";
-import { redisPing } from "./monitors";
+import { createTcpHeartBeat } from "@app/services/tcp.service";
+
+import { tcpPing } from "./monitors";
 import { IEmailLocals } from "@app/interfaces/notification.interface";
 import { locals, emailSender } from "@app/utils/utils";
 
-class RedisMonitor {
+class TcpMonitor {
   errorCount: number;
   noSuccessAlert: boolean;
   emailsLocals: IEmailLocals;
@@ -26,15 +27,15 @@ class RedisMonitor {
   }
 
   async start(data: IMonitorDocument) {
-    const { monitorId, url } = data;
+    const { monitorId, url, port, timeout } = data;
     try {
       const monitorData: IMonitorDocument = await getMonitorById(monitorId!);
       this.emailsLocals.appName = monitorData.name;
-      const response: IMonitorResponse = await redisPing(url!);
+      const response: IMonitorResponse = await tcpPing(url!, port!, timeout!);
       this.assertionCheck(response, monitorData);
     } catch (error) {
       const monitorData: IMonitorDocument = await getMonitorById(monitorId!);
-      this.redisError(monitorData, error);
+      this.tcpError(monitorData, error);
     }
   }
 
@@ -52,25 +53,26 @@ class RedisMonitor {
       responseTime: response.responseTime,
       connection: response.status,
     };
-    if (monitorData.connection !== response.status) {
+    const respTime = JSON.parse(monitorData.responseTime!);
+    if (
+      monitorData.connection !== response.status ||
+      respTime < response.responseTime
+    ) {
       this.errorCount += 1;
       heartbeatData = {
         ...heartbeatData,
         status: 1,
-        message: "Failed redis response assertion",
+        message: "Failed tcp response assertion",
         code: 500,
       };
       await Promise.all([
         updateMonitorStatus(monitorData, timestamp, "failure"),
-        createRedisHeartBeat(heartbeatData),
+        createTcpHeartBeat(heartbeatData),
       ]);
       logger.info(
-        `Redis heartbeat failed assertions! Monitor ID: ${monitorData.id}`
+        `TCP heartbeat failed assertions: Monitor ID ${monitorData.id}`
       );
-      if (
-        monitorData.alertThreshold > 0 &&
-        this.errorCount > monitorData.alertThreshold
-      ) {
+      if (!this.noSuccessAlert) {
         this.errorCount = 0;
         this.noSuccessAlert = false;
         emailSender(
@@ -82,9 +84,9 @@ class RedisMonitor {
     } else {
       await Promise.all([
         updateMonitorStatus(monitorData, timestamp, "success"),
-        createRedisHeartBeat(heartbeatData),
+        createTcpHeartBeat(heartbeatData),
       ]);
-      logger.info(`Redis heartbeat success! Monitor ID: ${monitorData.id}`);
+      logger.info(`TCP heartbeat success: Monitor ID ${monitorData.id}`);
       if (!this.noSuccessAlert) {
         this.errorCount = 0;
         this.noSuccessAlert = true;
@@ -97,24 +99,23 @@ class RedisMonitor {
     }
   }
 
-  async redisError(monitorData: IMonitorDocument, error: IMonitorResponse) {
+  async tcpError(monitorData: IMonitorDocument, error: IMonitorResponse) {
     this.errorCount += 1;
     const timestamp = dayjs.utc().valueOf();
     const heartbeatData: IHeartbeat = {
       monitorId: monitorData.id!,
       status: 1,
       code: error.code,
-      message:
-        error && error.message ? error.message : "Redis heartbeat failed",
+      message: error && error.message ? error.message : "TCP heartbeat failed",
       timestamp,
       responseTime: error.responseTime,
       connection: error.status,
     };
     await Promise.all([
       updateMonitorStatus(monitorData, timestamp, "failure"),
-      createRedisHeartBeat(heartbeatData),
+      createTcpHeartBeat(heartbeatData),
     ]);
-    logger.info(`Redis heartbeat failed: Monitor ID ${monitorData.id}`);
+    logger.info(`TCP heartbeat failed: Monitor ID ${monitorData.id}`);
     if (
       monitorData.alertThreshold > 0 &&
       this.errorCount > monitorData.alertThreshold
@@ -130,4 +131,4 @@ class RedisMonitor {
   }
 }
 
-export const redisMonitor: RedisMonitor = new RedisMonitor();
+export const tcpMonitor: TcpMonitor = new TcpMonitor();

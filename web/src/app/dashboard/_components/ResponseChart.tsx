@@ -16,7 +16,6 @@ interface DataType {
 const ResponseChart = ({ heartbeats, showLabel }: ResponseChartProps) => {
   let chartData: DataType[] = []
   heartbeats.map((hb) => {
-    console.log(dayjs(JSON.parse(`${hb.timestamp}`)).format('HH:mm'))
     chartData.push({
       timestamp: dayjs(JSON.parse(`${hb.timestamp}`)).format('HH:mm'),
       responseTime: hb.responseTime

@@ -66,7 +66,7 @@ const HomeGrid: FC<HomeTableProps> = ({ monitors, limit, autoRefreshLoading }): 
 
 const Feature = ({ title, children }: any): ReactElement => {
   return (
-    <div className="flex items-center justify-between w-full ">
+    <div className="flex items-center justify-between w-full gap-2">
       <span className="font-light text-base">{title}</span>
       {children}
     </div>

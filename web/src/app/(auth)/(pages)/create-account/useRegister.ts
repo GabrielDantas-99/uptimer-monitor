@@ -6,15 +6,24 @@ import {
   MutationFunctionOptions,
   useMutation,
 } from '@apollo/client';
-import { REGISTER_USER } from '@/queries/auth';
+import { REGISTER_USER, AUTH_SOCIAL_USER } from '@/queries/auth';
 import { useRouter } from 'next/navigation';
-import showErrorToast from '@/utils/toast';
 import { DispatchProps, MonitorContext } from '@/context/MonitorContext';
 import {
+  Auth,
+  FacebookAuthProvider,
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  UserCredential,
+} from 'firebase/auth';
+import showErrorToast from '@/utils/toast';
+import {
+  RegisterType,
   LoginType,
   registerSchema,
-  RegisterType,
 } from '../../_validations/auth';
+import firebaseApp from '../../firebase';
 
 export const useRegister = (): IUserAuth => {
   const { dispatch } = useContext(MonitorContext);
@@ -49,6 +58,55 @@ export const useRegister = (): IUserAuth => {
   };
 };
 
+export const useSocialRegister = (): IUserAuth => {
+  const { dispatch } = useContext(MonitorContext);
+  const router: AppRouterInstance = useRouter();
+  const [authSocialUser, { loading }] = useMutation(AUTH_SOCIAL_USER);
+
+  const registerWithGoogle = async (): Promise<void> => {
+    const provider = new GoogleAuthProvider();
+    const auth: Auth = getAuth(firebaseApp);
+    console.log(auth);
+    auth.useDeviceLanguage();
+    const userCredential: UserCredential = await signInWithPopup(
+      auth,
+      provider
+    );
+    const nameList = userCredential.user.displayName!.split(' ');
+    const data = {
+      username: nameList[0],
+      email: userCredential.user.email,
+      socialId: userCredential.user.uid,
+      type: 'google',
+    };
+    submitUserData(data as RegisterType, authSocialUser, dispatch, router);
+  };
+
+  const registerWithFacebook = async (): Promise<void> => {
+    const provider = new FacebookAuthProvider();
+    const auth: Auth = getAuth(firebaseApp);
+    auth.useDeviceLanguage();
+    const userCredential: UserCredential = await signInWithPopup(
+      auth,
+      provider
+    );
+    const nameList = userCredential.user.displayName!.split(' ');
+    const data = {
+      username: nameList[0],
+      email: userCredential.user.email,
+      socialId: userCredential.user.uid,
+      type: 'facebook',
+    };
+    submitUserData(data as RegisterType, authSocialUser, dispatch, router);
+  };
+
+  return {
+    loading,
+    authWithGoogle: registerWithGoogle,
+    authWithFacebook: registerWithFacebook,
+  };
+};
+
 async function submitUserData(
   data: RegisterType,
   registerUserMethod: (
@@ -62,12 +120,14 @@ async function submitUserData(
       variables: { user: data },
     });
     if (result && result.data) {
-      const { registerUser } = result.data;
+      const { registerUser, authSocialUser } = result.data;
       dispatch({
         type: 'dataUpdate',
         payload: {
-          user: registerUser.user,
-          notifications: registerUser.notifications,
+          user: registerUser ? registerUser.user : authSocialUser.user,
+          notifications: registerUser
+            ? registerUser.notifications
+            : authSocialUser.notifications,
         },
       });
       router.push('/dashboard');

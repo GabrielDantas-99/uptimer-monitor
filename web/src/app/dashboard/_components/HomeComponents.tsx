@@ -5,12 +5,11 @@ import {
   IMonitorState,
   IPagination,
 } from "@/interfaces/monitor.interface";
-import { Dispatch, FormEvent, SetStateAction, useState } from "react";
+import { Dispatch, FormEvent, SetStateAction } from "react";
 import HomeButtonGroup from "./HomeButtonGroup";
 import Button from "@/app/_components/Button";
 import TextInput from "@/app/_components/TextInput";
-import clsx from "clsx";
-import { Grid, Pause, Play } from "lucide-react";
+import { Pause, Play } from "lucide-react";
 import SwitchView from "./SwitchView";
 import HomeGrid from "./HomeGrid";
 import HomeTable from "./HomeTable";
@@ -23,12 +22,13 @@ export const renderButtons = (
   setMonitorState: Dispatch<SetStateAction<IMonitorState>>
 ): JSX.Element => {
   return (
-    <div className="h-20 flex flex-col gap-y-3 mb-4 mt-2 md:items-center md:justify-between md:flex-row md:mb-0 md:mt-0">
+    <div className="grid grid-cols-3 sm:flex sm:justify-between gap-2">
       <HomeButtonGroup monitors={monitors} />
       <Button
         variant="success"
         onClick={() => setMonitorState({ ...monitorState, showModal: true })}
         label="New Uptime Test"
+        className="col-span-3"
       />
     </div>
   );
@@ -52,24 +52,27 @@ export const renderRefreshButtons = (
   }
 
   return (
-    <div className=" flex flex-col items-start justify-start lg:flex-row lg:items-center lg:justify-between ">
-      <Button
-        onClick={refreshMonitors}
-        label="Refresh"
-        variant="success"
-        disabled={!refreshed}
-      />
-      <div className="flex flex-col justify-start gap-3 lg:flex-row lg:justify-end lg:w-full ">
-        <SwitchView view={view} setView={setView} />
+    <div className="grid grid-cols-4 md:space-y-0 space-y-4 md:flex items-center md:justify-between md:gap-4">
+      <div className="col-span-4 gap-2 grid grid-cols-4">
+        <Button
+          onClick={refreshMonitors}
+          label="Refresh"
+          variant="success"
+          disabled={!refreshed}
+          className="col-span-1 md:col-span-2"
+        />
         <Button
           label={!refreshed ? "Enable Auto Refresh" : "Disable Auto Refresh"}
           onClick={enableAutoRefresh}
           icon={!refreshed ? <Play /> : <Pause />}
+          className=" md:col-span-2 col-span-3"
         />
-        <div className="w-full lg:w-[30%]"
+      </div>
+      <div className="col-span-4 flex items-center gap-2">
+        <SwitchView view={view} setView={setView} />
+        <div className="w-full "
           onChange={(event: FormEvent) => {
             const value: string = (event.target as HTMLInputElement).value;
-            console.log(value)
             const results: IMonitorDocument[] = filter(monitors, (monitor: IMonitorDocument) => {
               return toLower(monitor.name).includes(toLower(value)) || toLower(monitor.type).includes(toLower(value))
             });

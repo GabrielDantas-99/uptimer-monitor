@@ -12,7 +12,7 @@ const HomeTableBtnGroup: FC<HomeTableBtnGroupProps> = ({
 }): ReactElement => {
 
   return (
-    <div className="grid grid-cols-3 gap-1" role="group">
+    <div className="grid grid-cols-3 gap-1 min-w-28" role="group">
       <Button
         icon={monitor.active ? <Pause /> : <Play />}
         type="button"
