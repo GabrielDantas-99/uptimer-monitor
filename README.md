@@ -41,9 +41,133 @@
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+# REST API with Spring Boot and Angular
+
+![Build](https://github.com/loiane/crud-angular-spring/actions/workflows/build.yml/badge.svg?branch=main)
+
+A basic Angular + Spring delivery system demonstrating the Has-Many relationship.
+
+This app is to showcase, especially for beginners, what a basic CRUD API that's close to being Production-ready looks like.
+
+## 💻 Tecnologies
+
+- Node.js
+- Next.js v14 (App Routes)
+- Apollo Server/Client
+- Graphql
+- Docker
+- Express
+- MongoDB
+- Sequelize
+- PostgreSQL
+- Firebase
+- Nodemailer
+- Croner
+- Zod
+
+## Some functionalities available in the API
+
+- ✅ Handle authentication/authorization with JWT
+- ✅ NextJS client application with Apollo Client to GraphQL server
+- ✅ TailwindCSS to style elements in a NextJS application
+- ✅ GraphQL server based on NodeJS, Express and Apollo Server
+- ✅ GraphQL WebSocket Subscriptions to publish and consume messages in real time
+- ✅ PostgreSQL database (you can use any database of your preference)
+- ✅ Flexible data schemas with GraphQL
+- ✅ Shadcn Components
+- ✅ Charts (Shadcn + Recharts)
+- ✅ Caching
+
+### Not implemented (maybe in a future version)
+
+- Unit and end-to-end testing
+- Data Compression
+- Throttling e Rate-limiting
+- Test Containers
+- Docker Build
+- Node.js api documentation with swagger
+- CI workflow with Github Actions
+
+## Some functionalities available in the front end
+
+- ✅ Login via Google and Facebook providers
+- ✅ React components
+- ✅ Shadn UI Interface
+- ✅ Responsive Interface
+- ✅ Dark🌛 / Light🌞 mode
+- ✅ List of all main services with pagination
+- ✅ Form to update/create services (Zod validation)
+- ✅ View only screen
+- ✅ Caching rendering work and data requests
+
+## Screenshots
+
+### Public Pages:
+
+<table>
+  <thead>
+    <th>
+      Main Page
+    </th>
+    <th>
+      Login Page
+    </th>
+    <th>
+      Register Page
+    </th>
+  </thead>
+  <tbody>
+    <td><img style="width: 100%; height: 100%"" src="./docs/landing.png" alt="Main Page" width="100%"></td>
+    <td><img style="width: 100%; height: 100%" src="./docs/login.png" alt="User Drawer" width="100%"></td>
+    <td><img style="width: 100%; height: 100%" src="./docs/register.png" alt="My cart" width="100%"></td>
+  </tbody>
+</table>
+
+### Admin Dashboard:
+
+#### Desktop:
+
+<table>
+  <thead>
+    <th>
+      Table View
+    </th>
+    <th>
+      Grid View
+    </th>
+  </thead>
+  <tbody>
+    <td><img style="width: 600px; border: 1px solid #e2e8f0" src="./docs/table-services.png" alt="Overview Page" width="100%"></td>
+    <td> <img style="width: 600px; border: 1px solid #e2e8f0" src="./docs/grid-services.png" alt="Dark mode Overview Page" width="100%"></td>
+  </tbody>
+</table>
+
+#### Mobile:
+
+<table>
+  <thead>
+   <th>
+      Sidebar
+    </th>
+   <th>
+      Table View
+    </th>
+    <th>
+      Grid View
+    </th>
+  </thead>
+  <tbody>
+    <td><img style="width: 600px; border: 1px solid #e2e8f0" src="./docs/mobile-sidebar.png" alt="Overview Page" width="100%"></td>
+    <td><img style="width: 600px; border: 1px solid #e2e8f0" src="./docs/mobile-table.png" alt="Overview Page" width="100%"></td>
+    <td> <img style="width: 600px; border: 1px solid #e2e8f0" src="./docs/mobile-grid.png" alt="Dark mode Overview Page" width="100%"></td>
+  </tbody>
+</table>
+
+## ❗️Executing the code locally
+
 <!-- GETTING STARTED -->
 
-## Getting Started
+### Getting Started
 
 To get a local copy up and running follow these simple example steps.
 
@@ -55,12 +179,6 @@ This is an example of how to list things you need to use the software and how to
 
   ```sh
   https://nodejs.org/en/download/
-  ```
-
-- PNPM
-
-  ```sh
-  npm install pnpm -g
   ```
 
 - Docker
@@ -77,35 +195,25 @@ Clone the repo
 git@github.com:GabrielDantas-99/uptimer-monitor.git
 ```
 
-1. Install packages
+1. Install packages: Inside uptimer-monitor/web and uptimer-monitor/server
 
    ```sh
-   pnpm install
+   npm install
    ```
 
 2. Run the container(or stop it, if necessary):
-  
-   ```sh
-   pnpm compose:up
-   ```
-
-3. Setup Configuration
 
    ```sh
-   pnpm config:local
+   npm compose:up
    ```
 
-4. Run the relay
-
-    ```sh
-    pnpm relay
-    ```
-
-5. Run the Project
+3. Run the Project
 
    ```sh
-   pnpm dev
+   npm dev
    ```
+
+Open your browser and access **http://localhost:3000** (Next.js default port).
 
 <!-- CONTRIBUTING -->
 
@@ -147,4 +255,4 @@ Project Link: https://github.com/GabrielDantas-99/uptimer-monitor
 [mongodb]: https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white
 [mongodb-url]: https://mongodb.com
 [apollo]: https://img.shields.io/badge/ApolloServer-13222a?style=for-the-badge&logo=apollographql&logoColor=c7cfce
-[apollo-url]:https://www.apollographql.com/docs
+[apollo-url]: https://www.apollographql.com/docs
