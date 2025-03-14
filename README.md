@@ -5,32 +5,6 @@
 <div align=center>
   
   # Uptimer Monitor
-  
-</div>
-
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ol>
-</details>
-
-### Built With
 
 [![Next][next.js]][next-url]
 [![React][react.js]][react-url]
@@ -39,9 +13,54 @@
 [![MongoDB][mongodb]][mongodb-url]
 [![Apollo][apollo]][apollo-url]
 
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>
+    <a href="#about-the-project">About The Project</a>
+  </summary>
+  <ol>
+    <li>
+      <a href="#technologies">Technologies</a>
+      </li>
+      <li>
+        <a href="#functionalities">Functionalities</a>
+        <ul>
+          <li><a href="#available-in-server">Available in the Server</a></li>
+          <li><a href="#available-in-client">Available in the Client</a></li>
+          <li><a href="#not-implemented">Not implemented</a></li>
+        </ul>
+    </li>
+      <li>
+        <a href="#screenshots">Screenshots</a>
+        <ul>
+          <li><a href="#public-pages">Public Pages</a></li>
+          <li>
+            <a href="#admin">Admin Dashboard</a>
+            <ul>
+          <li><a href="#desktop">Desktop</a></li>
+          <li><a href="#mobile">Mobile</a></li>
+        </ul>
+          </li>
+        </ul>
+    </li>
+    <li>
+      <a href="#executing-locally">Executing the code locally</a>
+      <ul>
+        <li><a href="#installation">Installation</a></li>
+            <li><a href="#contributing">Contributing</a></li>
+      </ul>
+    </li>
+    <li><a href="#contact">Contact</a></li>
+  </ol>
+</details>
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 # REST API with Spring Boot and Angular
+
+<div id="about-the-project"></div>
 
 ![Build](https://github.com/loiane/crud-angular-spring/actions/workflows/build.yml/badge.svg?branch=main)
 
@@ -49,7 +68,9 @@ A basic Angular + Spring delivery system demonstrating the Has-Many relationship
 
 This app is to showcase, especially for beginners, what a basic CRUD API that's close to being Production-ready looks like.
 
-## 💻 Tecnologies
+## 💻 Technologies
+
+<div id="technologies"></div>
 
 - Node.js
 - Next.js v14 (App Routes)
@@ -67,6 +88,9 @@ This app is to showcase, especially for beginners, what a basic CRUD API that's 
 
 ## Some functionalities available in the Server
 
+<div id="available-in-server"></div>
+
+
 - ✅ Handle authentication/authorization with JWT
 - ✅ GraphQL server based on NodeJS, Express and Apollo Server
 - ✅ GraphQL WebSocket Subscriptions to publish and consume messages in real time
@@ -74,7 +98,8 @@ This app is to showcase, especially for beginners, what a basic CRUD API that's 
 - ✅ Flexible data schemas with GraphQL
 - ✅ MongoDB, Redis and PostgreSQL services from docker container.
 
-## Some functionalities available in the front end
+## Some functionalities available in the client
+<div id="available-in-client"></div>
 
 - ✅ Login via Google and Facebook providers
 - ✅ React components
@@ -88,6 +113,8 @@ This app is to showcase, especially for beginners, what a basic CRUD API that's 
 
 ### Not implemented (maybe in a future version)
 
+<div id="not-implemented"></div>
+
 - Unit and end-to-end testing
 - Data Compression
 - Throttling e Rate-limiting
@@ -98,7 +125,11 @@ This app is to showcase, especially for beginners, what a basic CRUD API that's 
 
 ## Screenshots
 
+<div id="ccreenshots"></div>
+
 ### Public Pages:
+
+<div id="public-pages"></div>
 
 <table>
   <thead>
@@ -121,8 +152,11 @@ This app is to showcase, especially for beginners, what a basic CRUD API that's 
 
 ### Admin Dashboard:
 
+<div id="admin"></div>
+
 #### Desktop:
 
+<div id="desktop"></div>
 <table>
   <thead>
     <th>
@@ -139,6 +173,8 @@ This app is to showcase, especially for beginners, what a basic CRUD API that's 
 </table>
 
 #### Mobile:
+
+<div id="mobile"></div>
 
 <table>
   <thead>
@@ -160,6 +196,8 @@ This app is to showcase, especially for beginners, what a basic CRUD API that's 
 </table>
 
 ## ❗️Executing the code locally
+
+<div id="executing-locally"></div>
 
 <!-- GETTING STARTED -->
 
@@ -183,8 +221,9 @@ This is an example of how to list things you need to use the software and how to
   https://www.docker.com/get-started/
   ```
 
-## Installation
+### Installation
 
+<div id="installation"></div>
 Clone the repo
 
 ```sh
@@ -213,8 +252,9 @@ Open your browser and access **http://localhost:3000** (Next.js default port).
 
 <!-- CONTRIBUTING -->
 
-## Contributing
+### Contributing
 
+<div id="contributing"></div>
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
