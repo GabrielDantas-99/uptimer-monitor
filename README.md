@@ -65,28 +65,14 @@ This app is to showcase, especially for beginners, what a basic CRUD API that's 
 - Croner
 - Zod
 
-## Some functionalities available in the API
+## Some functionalities available in the Server
 
 - ✅ Handle authentication/authorization with JWT
-- ✅ NextJS client application with Apollo Client to GraphQL server
-- ✅ TailwindCSS to style elements in a NextJS application
 - ✅ GraphQL server based on NodeJS, Express and Apollo Server
 - ✅ GraphQL WebSocket Subscriptions to publish and consume messages in real time
 - ✅ PostgreSQL database (you can use any database of your preference)
 - ✅ Flexible data schemas with GraphQL
-- ✅ Shadcn Components
-- ✅ Charts (Shadcn + Recharts)
-- ✅ Caching
-
-### Not implemented (maybe in a future version)
-
-- Unit and end-to-end testing
-- Data Compression
-- Throttling e Rate-limiting
-- Test Containers
-- Docker Build
-- Node.js api documentation with swagger
-- CI workflow with Github Actions
+- ✅ MongoDB, Redis and PostgreSQL services from docker container.
 
 ## Some functionalities available in the front end
 
@@ -99,6 +85,16 @@ This app is to showcase, especially for beginners, what a basic CRUD API that's 
 - ✅ Form to update/create services (Zod validation)
 - ✅ View only screen
 - ✅ Caching rendering work and data requests
+
+### Not implemented (maybe in a future version)
+
+- Unit and end-to-end testing
+- Data Compression
+- Throttling e Rate-limiting
+- Test Containers
+- Docker Build
+- Node.js api documentation with swagger
+- CI workflow with Github Actions
 
 ## Screenshots
 
