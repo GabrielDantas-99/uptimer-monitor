@@ -91,8 +91,6 @@ This app is to showcase, especially for beginners, what a basic CRUD API that's 
 <div id="available-in-server"></div>
 
 - ✅ Handle authentication/authorization with JWT
-- ✅ NextJS client application with Apollo Client to GraphQL server
-- ✅ TailwindCSS to style elements in a NextJS application
 - ✅ GraphQL server based on NodeJS, Express and Apollo Server
 - ✅ GraphQL WebSocket Subscriptions to publish and consume messages in real time
 - ✅ PostgreSQL database (you can use any database of your preference)
