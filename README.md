@@ -58,15 +58,13 @@
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-# REST API with Spring Boot and Angular
+# Uptimer Monitor - Real-Time Service Monitoring with GraphQL
 
 <div id="about-the-project"></div>
 
 ![Build](https://github.com/loiane/crud-angular-spring/actions/workflows/build.yml/badge.svg?branch=main)
 
-A basic Angular + Spring delivery system demonstrating the Has-Many relationship.
-
-This app is to showcase, especially for beginners, what a basic CRUD API that's close to being Production-ready looks like.
+This project, "Uptimer Monitor", is a complete service monitoring application built using modern technologies and advanced development practices. The main goal is to provide a robust and scalable platform for monitoring the availability and performance of web services in real time.
 
 ## 💻 Technologies
 
