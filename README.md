@@ -95,9 +95,7 @@ This app is to showcase, especially for beginners, what a basic CRUD API that's 
 - ✅ GraphQL WebSocket Subscriptions to publish and consume messages in real time
 - ✅ PostgreSQL database (you can use any database of your preference)
 - ✅ Flexible data schemas with GraphQL
-- ✅ Shadcn Components
-- ✅ Charts (Shadcn + Recharts)
-- ✅ Caching
+- ✅ MongoDB, Redis and PostgreSQL services from docker container.
 
 ## Some functionalities available in the client
 
